@@ -1,0 +1,2 @@
+# HYBImageCliped
+开源高效处理圆角的扩展，包括UIImageView、UIView、UIButton、UIImage的扩展API，可根据图片颜色生成图片带任意圆角，可给UIButton根据不同状态处理图片。所有生成图片都不会引起离屏渲染且不会引起blended color layer、misaligned image等。
