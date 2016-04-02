@@ -136,6 +136,8 @@
 		6938807C1CAF6B0500956618 /* UIImageView+WebCache.m in Sources */ = {isa = PBXBuildFile; fileRef = 6938805C1CAF6B0500956618 /* UIImageView+WebCache.m */; };
 		6938807D1CAF6B0500956618 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6938805E1CAF6B0500956618 /* UIView+WebCacheOperation.m */; };
 		6938807E1CAF6B0500956618 /* UIView+WebCacheOperation.m in Sources */ = {isa = PBXBuildFile; fileRef = 6938805E1CAF6B0500956618 /* UIView+WebCacheOperation.m */; };
+		693880D01CAFDC2D00956618 /* HYBImageClipedManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 693880CF1CAFDC2D00956618 /* HYBImageClipedManager.m */; };
+		693880D11CAFDC2D00956618 /* HYBImageClipedManager.m in Sources */ = {isa = PBXBuildFile; fileRef = 693880CF1CAFDC2D00956618 /* HYBImageClipedManager.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -265,6 +267,8 @@
 		6938805C1CAF6B0500956618 /* UIImageView+WebCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIImageView+WebCache.m"; sourceTree = "<group>"; };
 		6938805D1CAF6B0500956618 /* UIView+WebCacheOperation.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "UIView+WebCacheOperation.h"; sourceTree = "<group>"; };
 		6938805E1CAF6B0500956618 /* UIView+WebCacheOperation.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "UIView+WebCacheOperation.m"; sourceTree = "<group>"; };
+		693880CE1CAFDC2D00956618 /* HYBImageClipedManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYBImageClipedManager.h; sourceTree = "<group>"; };
+		693880CF1CAFDC2D00956618 /* HYBImageClipedManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBImageClipedManager.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -363,6 +367,8 @@
 				690CA6C21CAD330600E2F50B /* UIButton+HYBImageCliped.h */,
 				690CA6C31CAD330600E2F50B /* UIButton+HYBImageCliped.m */,
 				691DFC1C1CAEDC75007CA458 /* HYBImageCliped.h */,
+				693880CE1CAFDC2D00956618 /* HYBImageClipedManager.h */,
+				693880CF1CAFDC2D00956618 /* HYBImageClipedManager.m */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -639,6 +645,7 @@
 				690CA6981CAD196D00E2F50B /* ViewController.m in Sources */,
 				693880711CAF6B0500956618 /* UIButton+WebCache.m in Sources */,
 				690DC6781CAD723C003F2201 /* Demo1Controller.m in Sources */,
+				693880D01CAFDC2D00956618 /* HYBImageClipedManager.m in Sources */,
 				693880751CAF6B0500956618 /* UIImage+MultiFormat.m in Sources */,
 				690CA6951CAD196D00E2F50B /* AppDelegate.m in Sources */,
 				693880671CAF6B0500956618 /* SDWebImageDecoder.m in Sources */,
@@ -692,6 +699,7 @@
 				690CA6C11CAD32EA00E2F50B /* UIView+HYBImageCliped.m in Sources */,
 				690DC69A1CAD7268003F2201 /* MASConstraint.m in Sources */,
 				693880741CAF6B0500956618 /* UIImage+GIF.m in Sources */,
+				693880D11CAFDC2D00956618 /* HYBImageClipedManager.m in Sources */,
 				6938807E1CAF6B0500956618 /* UIView+WebCacheOperation.m in Sources */,
 				690CA6AB1CAD196D00E2F50B /* HYBImageClipedTests.m in Sources */,
 				690DC6A01CAD7268003F2201 /* MASViewAttribute.m in Sources */,
