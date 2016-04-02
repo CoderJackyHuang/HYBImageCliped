@@ -13,7 +13,6 @@ Pod::Spec.new do |s|
   s.social_media_url   = "http://www.henishuo.com"
   s.source       = { :git => "https://github.com/CoderJackyHuang/HYBImageCliped.git", :tag => "#{s.version}" }
   s.source_files  = "Sources", "*.{h,m}"
-  s.public_header_files = "Sources/*.h"
   s.requires_arc = true
 
 end

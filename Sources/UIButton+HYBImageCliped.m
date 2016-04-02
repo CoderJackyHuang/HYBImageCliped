@@ -6,8 +6,7 @@
 //  Copyright © 2016年 huangyibiao. All rights reserved.
 //
 
-#import "UIButton+HYBImageCliped.h"
-#import "UIImage+HYBmageCliped.h"
+#import "HYBImageCliped.h"
 
 @implementation UIButton (HYBImageCliped)
 

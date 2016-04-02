@@ -6,8 +6,7 @@
 //  Copyright © 2016年 huangyibiao. All rights reserved.
 //
 
-#import "UIImageView+HYBImageCliped.h"
-#import <CoreFoundation/CoreFoundation.h>
+#import "UIImage+HYBmageCliped.h"
 
 @implementation UIImage (HYBImageCliped)
 

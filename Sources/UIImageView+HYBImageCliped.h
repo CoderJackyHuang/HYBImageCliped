@@ -7,8 +7,6 @@
 //
 
 #import <UIKit/UIKit.h>
-#import <Foundation/Foundation.h>
-#import "UIView+HYBImageCliped.h"
 
 /**
  * GITHUB           : https://github.com/CoderJackyHuang/HYBImageCliped
