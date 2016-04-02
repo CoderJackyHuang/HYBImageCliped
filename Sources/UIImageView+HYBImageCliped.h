@@ -59,7 +59,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
 
 #pragma mark - 生成适应大小的图片显示
 /**
- *	使用指定的图片来填充，充当UIImageView。任何继承于UIView的控件，都可以有这么API。
+ *	使用指定的图片来填充，充当UIImageView。
  *  对于自动布局的控件，如果在设置图片时，没有指定大小，就无法得到正确的图片大小。
  *
  *	@param image	图片名称或者图片对象，甚至支持NSData
