@@ -8,7 +8,7 @@
 
 #import "Demo1Controller.h"
 #import "Masonry.h"
-#import "UIImageView+WebCache.h"
+//#import "UIImageView+WebCache.h"
 #import "HYBImageCliped.h"
 
 @implementation Demo1Controller
