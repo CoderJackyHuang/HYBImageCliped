@@ -4,8 +4,25 @@
 #概述
 
 **开源项目名称**：HYBImageCliped  
-**当前版本：**1.0.0  
+**当前版本：**1.1.0  
 **项目用途：**可给任意继承UIView的控件添加任意多个圆角、可根据颜色生成图片且可带任意个圆角、给UIButton设置不同状态下的图片且可带任意圆角、给UIImageView设置任意图片，支持带圆角或者直接生成圆形。上述功能都不会造成离屏渲染。
+
+#版本变化
+
+###Version 1.1.1
+
+* 未发布版本，下一版本将会增加带任意颜色的边框。敬请关注！
+
+###Version 1.1.0
+
+* 增加剪裁的图片缓存管理类HYBImageClipedManager，用于解决缓存到内存引起内存增长很快的问题。详情查看**[HYBImageClipedManager](#HYBImageClipedManager)**
+
+
+###Version 1.0.1
+
+* fix文档未上传的bug
+* 去掉不相关的注释
+* 增加demo
 
 #Screenshot
 
@@ -23,6 +40,41 @@
 
 ```
 #import "HYBImageCliped.h"
+```
+
+##<a name="HYBImageClipedManager"></a>HYBImageClipedManager
+
+此类用于处理图片缓存到本地，解决内存增长问题。只有以下几个API，分别是读取图片、存储图片、获取缓存大小、清空缓存：
+
+```
+/**
+ *	根据存储时指定的key从本地获取已剪裁好的图片
+ *
+ *	@param key	通常是URL。在内部会进行MD5
+ *
+ *	@return 从本地读取图片，不会存储到内存中，用于解决图片列表中内存暴涨问题
+ */
++ (UIImage *)clipedImageFromDiskWithKey:(NSString *)key;
+
+/**
+ *	在裁剪成功后，可以调用此API，将剪裁后的图片存储到本地。
+ *
+ *	@param clipedImage	已剪裁好的图片
+ *	@param key					唯一key，通常是指URL。内部会进行MD5.
+ */
++ (void)storeClipedImage:(UIImage *)clipedImage toDiskWithKey:(NSString *)key;
+
+/**
+ *	获取本地已存储的所有已剪裁的缓存大小，单位为bytes
+ *
+ *	@return 缓存大小
+ */
++ (unsigned long long)imagesCacheSize;
+
+/**
+ *	清除缓存
+ */
++ (void)clearClipedImagesCache;
 ```
 
 ##UIImage+HYBImageCliped
@@ -380,4 +432,6 @@ pod 'HYBImageCliped', '~> 1.0.0'
 #LICENSE
 
 **MIT LICENSE**
+
+
 
