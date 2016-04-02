@@ -14,5 +14,5 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/CoderJackyHuang/HYBImageCliped.git", :tag => "#{s.version}" }
   s.source_files  = "Sources", "*.{h,m}"
   s.requires_arc = true
-
+  s.platform     = :ios, "6.0"
 end

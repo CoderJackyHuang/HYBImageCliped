@@ -8,7 +8,7 @@
 
 #import "HYBGridCell.h"
 #import "HYBGridModel.h"
-//#import "UIImageView+WebCache.h"
+#import "UIImageView+WebCache.h"
 #import "HYBImageCliped.h"
 
 @interface HYBGridCell ()
@@ -50,23 +50,22 @@
   if (model.clipedImage) {
     self.imageView.image = model.clipedImage;
   } else {
-    // 请手动下载SDWebImage并放入工程中
-//    __weak __typeof(self) weakSelf = self;
-//    UIImage *image = [UIImage imageNamed:@"img5.jpg"];
-//    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-//      dispatch_async(dispatch_get_global_queue(0, 0), ^{
-//        
-//        // 将剪裁后的图片记录下来，下次直接使用
-//        model.clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
-//                                     cornerRadius:12
-//                                  backgroundColor:[UIColor blackColor]
-//                                     isEqualScale:NO];
-//        
-//        dispatch_async(dispatch_get_main_queue(), ^{
-//          weakSelf.imageView.image = model.clipedImage;
-//        });
-//      });
-//    }];
+    __weak __typeof(self) weakSelf = self;
+    UIImage *image = [UIImage imageNamed:@"img5.jpg"];
+    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+      dispatch_async(dispatch_get_global_queue(0, 0), ^{
+        
+        // 将剪裁后的图片记录下来，下次直接使用
+        model.clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
+                                     cornerRadius:12
+                                  backgroundColor:[UIColor blackColor]
+                                     isEqualScale:NO];
+        
+        dispatch_async(dispatch_get_main_queue(), ^{
+          weakSelf.imageView.image = model.clipedImage;
+        });
+      });
+    }];
   }
   
   self.titleLabel.text = model.title;
