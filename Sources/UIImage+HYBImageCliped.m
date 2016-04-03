@@ -18,7 +18,7 @@
   return [self hyb_private_clipImageToSize:targetSize
                               cornerRadius:0
                                    corners:UIRectCornerAllCorners
-                           backgroundColor:nil
+                           backgroundColor:[UIColor whiteColor]
                               isEqualScale:isEqualScale
                                   isCircle:NO];
 }
@@ -30,7 +30,7 @@
   return [self hyb_private_clipImageToSize:targetSize
                               cornerRadius:cornerRadius
                                    corners:UIRectCornerAllCorners
-                           backgroundColor:nil
+                           backgroundColor:backgroundColor
                               isEqualScale:isEqualScale
                                   isCircle:NO];
 }
