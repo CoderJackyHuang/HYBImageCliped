@@ -23,7 +23,7 @@
 }
 
 - (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius {
-
+  [self hyb_addCorner:corner cornerRadius:cornerRadius size:self.bounds.size];
 }
 
 - (void)hyb_addCornerRadius:(CGFloat)cornerRadius {
