@@ -10,15 +10,20 @@
 
 @implementation UIView (HYBImageCliped)
 
-- (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius {
-  UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
+- (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize {
+  CGRect frame = CGRectMake(0, 0, targetSize.width, targetSize.height);
+  UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:frame
                                              byRoundingCorners:corner
                                                    cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
   CAShapeLayer *layer = [CAShapeLayer layer];
-  layer.frame = self.bounds;
+  layer.frame = frame;
   layer.path = path.CGPath;
   
   self.layer.mask = layer;
+}
+
+- (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius {
+
 }
 
 - (void)hyb_addCornerRadius:(CGFloat)cornerRadius {

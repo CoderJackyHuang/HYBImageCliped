@@ -25,7 +25,7 @@
 
 #pragma mark - 给任意UIView添加圆角（非图片）
 /**
- *	给控件本身添加圆角，不是通过图片实现的。
+ *	给控件本身添加圆角，不是通过图片实现的。要求控件本身的frame是确定的，非自动布局才行。
  *
  *	@param corner			  多个圆角可通过UIRectCornerTopLeft | UIRectCornerTopRight这样来使用
  *	@param cornerRadius	圆角大小
@@ -38,13 +38,20 @@
 - (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius;
 
 /**
- * corner为UIRectCornerAllCorners 
+ * corner为UIRectCornerAllCorners，bounds大小已经有才能使用
  *
  * @Example   
  * 添加一个圆角：[view1 hyb_addCorner:UIRectCornerTopLeft cornerRadius:10];
  */
 - (void)hyb_addCornerRadius:(CGFloat)cornerRadius;
 
-
+/**
+ *  给控件本身添加圆角，不是通过图片实现的。
+ *
+ *	@param corner       添加哪些圆角
+ *	@param cornerRadius	圆角大小
+ *	@param targetSize		目标大小，即控件的frame.size
+ */
+- (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize;
 
 @end
