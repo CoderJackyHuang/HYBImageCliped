@@ -4,18 +4,23 @@
 #概述
 
 **开源项目名称**：HYBImageCliped  
-**当前版本：**1.1.0  
+**当前版本：**2.0.0  
 **项目用途：**可给任意继承UIView的控件添加任意多个圆角、可根据颜色生成图片且可带任意个圆角、给UIButton设置不同状态下的图片且可带任意圆角、给UIImageView设置任意图片，支持带圆角或者直接生成圆形。上述功能都不会造成离屏渲染。
 
 #版本变化
 
-###Version 1.1.2
+###Version 2.0.0
 
-* 增加新API，在使用autolayout时，要求明确指定大小
+* 将UIImageView扩展中的API全部移至UIView扩展，这样可以直接使用更轻量的UIView来显示图片，而不需要UIImageView。同时还可以兼容使用UImageView的同学
+* 增加几个方便生成图片的API
+* 新增图片添加**边框**功能
+
+详情查看：[Version2.0.0新增API](#Version2.0.0)
 
 ###Version 1.1.1
 
-* 未发布版本，下一版本将会增加带任意颜色的边框。敬请关注！
+* fix bug
+* 优化内存
 
 ###Version 1.1.0
 
@@ -90,6 +95,28 @@
 * 直接生成带四个圆角的图片
 * 生成带任意圆角的图片
 * 直接生成圆形图片
+
+###<a name="Version2.0.0">2.0.0新增：</a>增加添加图片边框属性
+
+```
+#pragma mark - 边框相关属属性，仅对生成圆形图片和矩形图片有效
+/**
+ *	默认为1.0，当小于0时，不会添加边框，仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, assign) CGFloat hyb_borderWidth;
+/**
+ *	当小于0时，不会添加边框。默认为0.仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, assign) CGFloat hyb_pathWidth;
+/**
+ *	边框线的颜色，默认为[UIColor lightGrayColor]，仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, strong) UIColor *hyb_borderColor;
+/**
+ *	Path颜色，默认为白色。仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, strong) UIColor *hyb_pathColor;
+```
 
 ###根据颜色生成图片
 
@@ -231,7 +258,9 @@
 - (void)hyb_addCornerRadius:(CGFloat)cornerRadius;
 ```
 
-##UIImageView+HYBImageCliped
+##~~UIImageView+HYBImageCliped~~
+
+2.0版本之后，已经添加至**UIView+HYBImageCliped**
 
 这里提供的API也有好几种，与UIImage+HYBImageCliped有点类似：
 
@@ -428,7 +457,7 @@ view3.backgroundColor = [UIColor greenColor];
 支持Pod安装，可直接将下面的代码放到Podfile中：
 
 ```
-pod 'HYBImageCliped', '~> 1.0.0'
+pod 'HYBImageCliped', '~> 2.0.0'
 ```
 
 或者到GITHUB直接下载【[HYBImageCliped](https://github.com/CoderJackyHuang/HYBImageCliped)】将其中的Sources目录放入到工程！
@@ -436,6 +465,8 @@ pod 'HYBImageCliped', '~> 1.0.0'
 #LICENSE
 
 **MIT LICENSE**
+
+
 
 
 
