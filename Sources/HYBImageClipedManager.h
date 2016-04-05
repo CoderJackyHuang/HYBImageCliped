@@ -15,7 +15,7 @@
 @interface HYBImageClipedManager : NSObject
 
 /**
- *	根据存储时指定的key从本地获取已剪裁好的图片
+ *	根据存储时指定的key从本地获取已剪裁好的图片。同步操作
  *
  *	@param key	通常是URL。在内部会进行MD5
  *
@@ -24,7 +24,7 @@
 + (UIImage *)clipedImageFromDiskWithKey:(NSString *)key;
 
 /**
- *	在裁剪成功后，可以调用此API，将剪裁后的图片存储到本地。
+ *	在裁剪成功后，可以调用此API，将剪裁后的图片存储到本地。同步操作。
  *
  *	@param clipedImage	已剪裁好的图片
  *	@param key					唯一key，通常是指URL。内部会进行MD5.

@@ -27,7 +27,8 @@
 
 #pragma mark - 设置按钮图片
 /**
- *	处理图片过大问题，要求button本身的size已经确定有值，否则不处理
+ *	处理图片过大问题，要求button本身的size已经确定有值，否则不处理.
+ *  若要设置生成图片的背景颜色，直接设置self.backgroundColor即可
  *
  *	@param image				图片名称或图片对象，也只可以是图片的NSData。
  *	@param state				状态
@@ -41,6 +42,7 @@
 
 /**
  *	处理图片过大问题，要求button本身的size已经确定有值，否则不处理
+ *  若要设置生成图片的背景颜色，直接设置self.backgroundColor即可*
  *
  *	@param image				图片名称或图片对象，也只可以是图片的NSData。
  *	@param state				状态
@@ -57,6 +59,7 @@
 #pragma mark - 设置按钮背景图片
 /**
  *	处理图片大小与控件大小不一致问题。设置背景图片。要求按钮本身已经有确定的大小。
+ *  若要设置生成图片的背景颜色，直接设置self.backgroundColor即可
  *
  *	@param image        图片名称或图片对象，也只可以是图片的NSData。
  *	@param state				状态
@@ -70,6 +73,7 @@
 
 /**
  *	处理图片大小与控件大小不一致问题。设置背景图片。要求按钮本身已经有确定的大小。
+ *  若要设置生成图片的背景颜色，直接设置self.backgroundColor即可
  *
  *	@param image        图片名称或图片对象，也只可以是图片的NSData。
  *	@param state				状态

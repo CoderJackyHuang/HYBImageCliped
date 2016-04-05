@@ -17,6 +17,24 @@
  */
 @interface UIImage (HYBImageCliped)
 
+#pragma mark - 边框相关属属性，仅对生成圆形图片和矩形图片有效
+/**
+ *	默认为1.0，当小于0时，不会添加边框，仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, assign) CGFloat hyb_borderWidth;
+/**
+ *	当小于0时，不会添加边框。默认为0.仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, assign) CGFloat hyb_pathWidth;
+/**
+ *	边框线的颜色，默认为[UIColor lightGrayColor]，仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, strong) UIColor *hyb_borderColor;
+/**
+ *	Path颜色，默认为白色。仅对生成圆形图片和矩形图片有效
+ */
+@property (nonatomic, strong) UIColor *hyb_pathColor;
+
 #pragma mark - 根据颜色生成图片
 /**
  *	根据颜色生成矩形图片

@@ -14,16 +14,19 @@
 
 - (void)viewDidLoad {
   [super viewDidLoad];
+
+  self.view.backgroundColor = [UIColor lightGrayColor];
   
-  UIImageView *cornerView1 = [[UIImageView alloc] init];
+  // 可以直接使用UIView来显示图片，不要求必须使用UIImageView
+  UIView *cornerView1 = [[UIView alloc] init];
   cornerView1.frame = CGRectMake(10, 10, 80, 80);
   [self.view addSubview:cornerView1];
   
   cornerView1.backgroundColor = [UIColor redColor];
  UIImage *image = [UIImage imageNamed:@"bimg1.jpg"];
-  [cornerView1 hyb_setCircleImage:image isEqualScale:YES onCliped:^(UIImage *clipedImage) {
-    NSLog(@"clipedImageSize: %@", NSStringFromCGSize(clipedImage.size));
-  }];
+ [cornerView1 hyb_setCircleImage:image size:CGSizeMake(80, 80) isEqualScale:YES backgrounColor:[UIColor lightGrayColor] onCliped:^(UIImage *clipedImage) {
+   
+ }];
   
   // 当图片的宽高比，与控件的宽高比不相等时，裁剪图片圆角会显示不好或者不显示出来。这是因为压缩后
   // 的图片是等比例压缩的。如果不是等比例压缩，图片就会不清楚。
@@ -69,13 +72,15 @@
   [self.view addSubview:imgView];
   
 //   也可以直接使用UIView的扩展API哦。对于直接加载本地的图片，直接使用UIView的扩展API就只可以了。
-  [imgView hyb_setCircleImage:@"img1.jpeg" isEqualScale:YES onCliped:^(UIImage *clipedImage) {
+  [imgView hyb_setCircleImage:@"img1.jpeg" size:CGSizeMake(80, 80) isEqualScale:YES backgrounColor:[UIColor lightGrayColor] onCliped:^(UIImage *clipedImage) {
     
   }];
+
   
   UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
   button.frame = CGRectMake(100, 200, 80, 80);
-  button.backgroundColor = [UIColor whiteColor];
+  // 先设置背景色，就可以生成与背景一样颜色的图片
+  button.backgroundColor = [UIColor lightGrayColor];
   [self.view addSubview:button];
   [button hyb_setImage:@"img1.jpeg" forState:UIControlStateNormal cornerRadius:40 isEqualScale:YES];
   [button hyb_setImage:@"bimg5.jpg" forState:UIControlStateHighlighted cornerRadius:40 isEqualScale:NO];
@@ -83,7 +88,37 @@
   UIImageView *colorImageView = [[UIImageView alloc] init];
   colorImageView.frame = CGRectMake(200, 200, 80, 100);
   [self.view addSubview:colorImageView];
-  colorImageView.image = [UIImage hyb_imageWithColor:[UIColor greenColor] toSize:CGSizeMake(80, 100) cornerRadius:20];
+  colorImageView.image = [UIImage hyb_imageWithColor:[UIColor greenColor] toSize:CGSizeMake(80, 100) cornerRadius:20 backgroundColor:[UIColor lightGrayColor]];
+  
+  UIImageView *bimgView = [[UIImageView alloc] init];
+  bimgView.frame = CGRectMake(10, 300, 80, 80);
+  [self.view addSubview:bimgView];
+  UIImage *bimg = [UIImage imageNamed:@"bimg4.jpg"];
+  bimg.hyb_pathWidth = 3;
+//  bimg.hyb_pathColor = [UIColor redColor];
+  bimg.hyb_borderColor = [UIColor redColor];
+  bimg.hyb_borderWidth = 0.5;
+  bimgView.image = [bimg hyb_clipToSize:bimgView.bounds.size cornerRadius:0 corners:UIRectCornerAllCorners backgroundColor:[UIColor lightGrayColor] isEqualScale:NO isCircle:YES];
+  
+  UIImageView *bimgView1 = [[UIImageView alloc] init];
+  bimgView1.frame = CGRectMake(100, 300, 80, 80);
+  [self.view addSubview:bimgView1];
+  UIImage *bimg1 = [UIImage imageNamed:@"bimg4.jpg"];
+
+  bimg1.hyb_pathWidth = 3;
+  bimg1.hyb_pathColor = [UIColor redColor];
+  bimgView1.image = [bimg1 hyb_clipToSize:bimgView1.bounds.size cornerRadius:0 corners:UIRectCornerAllCorners backgroundColor:[UIColor lightGrayColor] isEqualScale:NO isCircle:NO];
+  
+  UIImageView *bimgView3 = [[UIImageView alloc] init];
+  bimgView3.frame = CGRectMake(200, 300, 80, 80);
+  [self.view addSubview:bimgView3];
+  UIImage *bimg3 = [UIImage imageNamed:@"bimg4.jpg"];
+  bimg3.hyb_pathWidth = 5;
+    bimg.hyb_pathColor = [UIColor yellowColor];
+//  bimg3.hyb_borderColor = [UIColor redColor];
+  bimg3.hyb_borderWidth = 1;
+  bimgView3.image = [bimg hyb_clipCircleToSize:CGSizeMake(80, 80) backgroundColor:[UIColor lightGrayColor] isEqualScale:YES];
+  
 }
 
 @end
