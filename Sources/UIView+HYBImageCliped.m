@@ -26,6 +26,10 @@
   [self hyb_addCorner:corner cornerRadius:cornerRadius size:self.bounds.size];
 }
 
+- (void)hyb_addCornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize {
+  [self hyb_addCorner:UIRectCornerAllCorners cornerRadius:cornerRadius size:targetSize];
+}
+
 - (void)hyb_addCornerRadius:(CGFloat)cornerRadius {
   [self hyb_addCorner:UIRectCornerAllCorners cornerRadius:cornerRadius];
 }

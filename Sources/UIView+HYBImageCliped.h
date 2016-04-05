@@ -46,6 +46,14 @@
 - (void)hyb_addCornerRadius:(CGFloat)cornerRadius;
 
 /**
+ *  corner为UIRectCornerAllCorners，bounds要外部指定
+ *
+ *	@param cornerRadius	加钱大小
+ *	@param targetSize		指frame.size
+ */
+- (void)hyb_addCornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize;
+
+/**
  *  给控件本身添加圆角，不是通过图片实现的。
  *
  *	@param corner       添加哪些圆角
@@ -53,5 +61,7 @@
  *	@param targetSize		目标大小，即控件的frame.size
  */
 - (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize;
+
+
 
 @end
