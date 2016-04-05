@@ -17,6 +17,11 @@
 
 详情查看：[Version2.0.0新增API](#Version2.0.0)
 
+效果如下：
+
+![image](http://www.henishuo.com/wp-content/uploads/2016/04/QQ20160405-0@2x-e1459866017689.png)
+
+
 ###Version 1.1.1
 
 * fix bug
