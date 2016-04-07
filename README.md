@@ -4,10 +4,21 @@
 #概述
 
 **开源项目名称**：HYBImageCliped  
-**当前版本：**2.0.0  
+**当前版本：**2.1.0  
 **项目用途：**可给任意继承UIView的控件添加任意多个圆角、可根据颜色生成图片且可带任意个圆角、给UIButton设置不同状态下的图片且可带任意圆角、给UIImageView设置任意图片，支持带圆角或者直接生成圆形。上述功能都不会造成离屏渲染。
 
 #版本变化
+
+###Version 2.1.1
+
+* 优化内存,让所剪裁的图片快速释放！
+
+###Version 2.1.0
+
+* 增加带圆角的图片可以设置边框
+* 增加图片缓存到内存功能、异步读取、保存图片功能、异步清除缓存功能
+
+![image](http://www.henishuo.com/wp-content/uploads/2016/04/QQ20160407-0@2x-1-e1460027780352.png)
 
 ###Version 2.0.0
 
@@ -15,12 +26,11 @@
 * 增加几个方便生成图片的API
 * 新增图片添加**边框**功能
 
-详情查看：[Version2.0.0新增API](#Version2.0.0)
-
 效果如下：
 
 ![image](http://www.henishuo.com/wp-content/uploads/2016/04/QQ20160405-0@2x-e1459866017689.png)
 
+详情查看：[Version2.0.0新增API](#Version2.0.0)
 
 ###Version 1.1.1
 
@@ -470,6 +480,8 @@ pod 'HYBImageCliped', '~> 2.0.0'
 #LICENSE
 
 **MIT LICENSE**
+
+
 
 
 
