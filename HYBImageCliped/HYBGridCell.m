@@ -48,32 +48,62 @@
   
   self.model = model;
   
-  // 从本地读取，若有则直接使用之。
-  // 由于剪裁的图片通常都不小，所以为了解决内存暴涨问题，图片不会缓存到内存中，只是临时使用
-  // 这种方式带来的好处就是内存不会暴涨
-  UIImage *image = [HYBImageClipedManager clipedImageFromDiskWithKey:model.url];
-  if (image) {
-    self.imageView.image = image;
-  } else {
-    __weak __typeof(self) weakSelf = self;
-    UIImage *image = [UIImage imageNamed:@"img5.jpg"];
-    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
-      dispatch_async(dispatch_get_global_queue(0, 0), ^{
+  
+  // 异步读取图片，先从缓存读取，若没有读取到则从文件读取。若都没有取到，则走网络
+  [HYBImageClipedManager clipedImageFromDiskWithKey:model.url completion:^(UIImage *image) {
+    if (image) {
+      self.imageView.image = image;
+    } else {
+      __weak __typeof(self) weakSelf = self;
+      UIImage *image = [UIImage imageNamed:@"img5.jpg"];
+      [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+        if (image == nil || error != nil) {
+          return;
+        }
         
-        // 将剪裁后的图片记录下来，下次直接使用
-        UIImage *clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
-                                        cornerRadius:12
-                                     backgroundColor:[UIColor blackColor]
-                                        isEqualScale:NO];
-        // 存储到本地
-        [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
-        
-        dispatch_async(dispatch_get_main_queue(), ^{
-          weakSelf.imageView.image = clipedImage;
+        dispatch_async(dispatch_get_global_queue(0, 0), ^{
+          // 将剪裁后的图片记录下来，下次直接使用
+          UIImage *clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
+                                          cornerRadius:12
+                                       backgroundColor:[UIColor blackColor]
+                                          isEqualScale:YES];
+          dispatch_async(dispatch_get_main_queue(), ^{
+            weakSelf.imageView.image = clipedImage;
+            
+            // 存储到本地
+            [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
+          });
         });
-      });
-    }];
-  }
+      }];
+    }
+  }];
+  
+  //  // 从本地读取，若有则直接使用之。
+  //  // 由于剪裁的图片通常都不小，所以为了解决内存暴涨问题，图片不会缓存到内存中，只是临时使用
+  //  // 这种方式带来的好处就是内存不会暴涨
+  //  UIImage *image = [HYBImageClipedManager clipedImageFromDiskWithKey:model.url];
+  //  if (image) {
+  //    self.imageView.image = image;
+  //  } else {
+  //    __weak __typeof(self) weakSelf = self;
+  //    UIImage *image = [UIImage imageNamed:@"img5.jpg"];
+  //    [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+  //      dispatch_async(dispatch_get_global_queue(0, 0), ^{
+  //
+  //        // 将剪裁后的图片记录下来，下次直接使用
+  //        UIImage *clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
+  //                                        cornerRadius:12
+  //                                     backgroundColor:[UIColor blackColor]
+  //                                        isEqualScale:NO];
+  //        // 存储到本地
+  //        [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
+  //
+  //        dispatch_async(dispatch_get_main_queue(), ^{
+  //          weakSelf.imageView.image = clipedImage;
+  //        });
+  //      });
+  //    }];
+  //  }
   
   // 采用这种方式的坏处时，要缓存已剪裁的图片，当图片较多时，会引起内存暴涨。
   // 因此建议采用上面的方式

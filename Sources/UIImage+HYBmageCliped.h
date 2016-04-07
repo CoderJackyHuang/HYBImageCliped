@@ -23,7 +23,7 @@
  */
 @property (nonatomic, assign) CGFloat hyb_borderWidth;
 /**
- *	当小于0时，不会添加边框。默认为0.仅对生成圆形图片和矩形图片有效
+ *	当小于0时，不会添加边框。默认为0.仅对生成圆形图片和矩形图片有效。要求pathwidth > 2*borderwidth
  */
 @property (nonatomic, assign) CGFloat hyb_pathWidth;
 /**

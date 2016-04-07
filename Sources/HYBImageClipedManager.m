@@ -9,17 +9,116 @@
 #import "HYBImageClipedManager.h"
 #import <CommonCrypto/CommonDigest.h>
 
+static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
+  return image.size.height * image.size.width * image.scale * image.scale;
+}
+
+@interface HYBImageClipedManager ()
+
+@property (nonatomic, strong) NSCache *cache;
+@property (nonatomic, strong) dispatch_queue_t serialQueue;
+@property (nonatomic, strong) NSFileManager *fileManager;
+
+@end
+
 @implementation HYBImageClipedManager
+
++ (instancetype)shared {
+  static  HYBImageClipedManager *s_manager = nil;
+  
+  static dispatch_once_t onceToken;
+  dispatch_once(&onceToken, ^{
+    s_manager = [[[self class] alloc] init];
+  });
+  
+  return s_manager;
+}
+
+- (instancetype)init {
+  if (self = [super init]) {
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(hyb_private_clearCaches)
+                                                 name:UIApplicationDidReceiveMemoryWarningNotification
+                                               object:nil];
+    self.shouldCache = YES;
+    self.totalCostInMemory = 60 * 1024 * 1024; // 默认60M
+    _cache = [[NSCache alloc] init];
+    _cache.totalCostLimit = self.totalCostInMemory;
+    _serialQueue = dispatch_queue_create("com.huangyibiao.imagecliped_serial_queue",
+                                         DISPATCH_QUEUE_SERIAL);
+    dispatch_sync(self.serialQueue, ^{
+      self.fileManager = [[NSFileManager alloc] init];
+    });
+  }
+  
+  return self;
+}
+
+- (void)dealloc {
+  [[NSNotificationCenter defaultCenter] removeObserver:self
+                                                  name:UIApplicationDidReceiveMemoryWarningNotification
+                                                object:nil];
+}
+
+- (void)hyb_private_clearCaches {
+  [self.cache removeAllObjects];
+}
 
 + (UIImage *)clipedImageFromDiskWithKey:(NSString *)key {
   if (key && key.length) {
     NSString *subpath = [self hyb_md5:key];
+    
+    UIImage *image = nil;
+    if ([HYBImageClipedManager shared].shouldCache) {
+      image = [[HYBImageClipedManager shared].cache objectForKey:subpath];
+      
+      if (image) {
+        return image;
+      }
+    }
+    
     NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
-    UIImage *image = [UIImage imageWithContentsOfFile:path];
+    image = [UIImage imageWithContentsOfFile:path];
+    
     return image;
   }
   
   return nil;
+}
+
++ (void)clipedImageFromDiskWithKey:(NSString *)key completion:(HYBCacheImage)completion {
+  if (key && key.length) {
+    dispatch_async([HYBImageClipedManager shared].serialQueue, ^{
+      NSString *subpath = [self hyb_md5:key];
+      
+      UIImage *image = nil;
+      if ([HYBImageClipedManager shared].shouldCache) {
+        image = [[HYBImageClipedManager shared].cache objectForKey:subpath];
+        
+        if (image) {
+          dispatch_async(dispatch_get_main_queue(), ^{
+            if (completion) {
+              completion(image);
+            }
+          });
+          return;
+        }
+      }
+      
+      NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
+      image = [UIImage imageWithContentsOfFile:path];
+      
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (completion) {
+          completion(image);
+        }
+      });
+    });
+  } else {
+    if (completion) {
+      completion(nil);
+    }
+  }
 }
 
 + (void)storeClipedImage:(UIImage *)clipedImage toDiskWithKey:(NSString *)key {
@@ -27,49 +126,61 @@
     return;
   }
   
-  if (![[NSFileManager defaultManager] fileExistsAtPath:[self hyb_cachePath] isDirectory:nil]) {
-    NSError *error = nil;
-   BOOL isOK = [[NSFileManager defaultManager] createDirectoryAtPath:[self hyb_cachePath]
-                                         withIntermediateDirectories:YES
-                                                          attributes:nil
-                                                               error:&error];
-    if (isOK && error == nil) {
-#ifdef kHYBImageCliped
-      NSLog(@"create folder HYBClipedImages ok");
-#endif
-    } else {
-      return;
-    }
+  NSString *subpath = [self hyb_md5:key];
+  
+  if ([HYBImageClipedManager shared].shouldCache) {
+    NSUInteger cost = HYBCacheCostForImage(clipedImage);
+    [[HYBImageClipedManager shared].cache setObject:clipedImage forKey:subpath cost:cost];
   }
   
-  NSString *subpath = [self hyb_md5:key];
-  NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
-  NSData *data = UIImagePNGRepresentation(clipedImage);
-  BOOL isOk = [[NSFileManager defaultManager] createFileAtPath:path contents:data attributes:nil];
-  if (isOk) {
+  dispatch_async([HYBImageClipedManager shared].serialQueue, ^{
+    if (![[HYBImageClipedManager shared].fileManager fileExistsAtPath:[self hyb_cachePath] isDirectory:nil]) {
+      NSError *error = nil;
+      BOOL isOK = [[HYBImageClipedManager shared].fileManager createDirectoryAtPath:[self hyb_cachePath]
+                                            withIntermediateDirectories:YES
+                                                             attributes:nil
+                                                                  error:&error];
+      if (isOK && error == nil) {
 #ifdef kHYBImageCliped
-    NSLog(@"save cliped image to disk ok, key path is %@", path);
+        NSLog(@"create folder HYBClipedImages ok");
 #endif
-  } else {
+      } else {
+        return;
+      }
+    }
+    
+    NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
+    NSData *data = UIImagePNGRepresentation(clipedImage);
+    BOOL isOk = [[HYBImageClipedManager shared].fileManager createFileAtPath:path contents:data attributes:nil];
+    if (isOk) {
 #ifdef kHYBImageCliped
-    NSLog(@"save cliped image to disk fail, key path is %@", path);
+      NSLog(@"save cliped image to disk ok, key path is %@", path);
 #endif
-  }
+    } else {
+#ifdef kHYBImageCliped
+      NSLog(@"save cliped image to disk fail, key path is %@", path);
+#endif
+    }
+  });
 }
 
 + (void)clearClipedImagesCache {
-  NSString *directoryPath = [self hyb_cachePath];
-  
-  if ([[NSFileManager defaultManager] fileExistsAtPath:directoryPath isDirectory:nil]) {
-    NSError *error = nil;
-    [[NSFileManager defaultManager] removeItemAtPath:directoryPath error:&error];
+  dispatch_async([HYBImageClipedManager shared].serialQueue, ^{
+    [[HYBImageClipedManager shared].cache removeAllObjects];
     
-    if (error) {
-      NSLog(@"clear caches error: %@", error);
-    } else {
-      NSLog(@"clear caches ok");
+    NSString *directoryPath = [self hyb_cachePath];
+    
+    if ([[HYBImageClipedManager shared].fileManager fileExistsAtPath:directoryPath isDirectory:nil]) {
+      NSError *error = nil;
+      [[HYBImageClipedManager shared].fileManager removeItemAtPath:directoryPath error:&error];
+      
+      if (error) {
+        NSLog(@"clear caches error: %@", error);
+      } else {
+        NSLog(@"clear caches ok");
+      }
     }
-  }
+  });
 }
 
 + (unsigned long long)imagesCacheSize {
@@ -77,15 +188,15 @@
   BOOL isDir = NO;
   unsigned long long total = 0;
   
-  if ([[NSFileManager defaultManager] fileExistsAtPath:directoryPath isDirectory:&isDir]) {
+  if ([[HYBImageClipedManager shared].fileManager fileExistsAtPath:directoryPath isDirectory:&isDir]) {
     if (isDir) {
       NSError *error = nil;
-      NSArray *array = [[NSFileManager defaultManager] contentsOfDirectoryAtPath:directoryPath error:&error];
+      NSArray *array = [[HYBImageClipedManager shared].fileManager contentsOfDirectoryAtPath:directoryPath error:&error];
       
       if (error == nil) {
         for (NSString *subpath in array) {
           NSString *path = [directoryPath stringByAppendingPathComponent:subpath];
-          NSDictionary *dict = [[NSFileManager defaultManager] attributesOfItemAtPath:path
+          NSDictionary *dict = [[HYBImageClipedManager shared].fileManager attributesOfItemAtPath:path
                                                                                 error:&error];
           if (!error) {
             total += [dict[NSFileSize] unsignedIntegerValue];

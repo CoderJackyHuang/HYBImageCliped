@@ -105,9 +105,11 @@
   [self.view addSubview:bimgView1];
   UIImage *bimg1 = [UIImage imageNamed:@"bimg4.jpg"];
 
-  bimg1.hyb_pathWidth = 3;
+  bimg1.hyb_pathWidth = 5;
   bimg1.hyb_pathColor = [UIColor redColor];
-  bimgView1.image = [bimg1 hyb_clipToSize:bimgView1.bounds.size cornerRadius:0 corners:UIRectCornerAllCorners backgroundColor:[UIColor lightGrayColor] isEqualScale:NO isCircle:NO];
+  bimg1.hyb_borderColor = [UIColor yellowColor];
+  bimg1.hyb_borderWidth = 1;
+  bimgView1.image = [bimg1 hyb_clipToSize:bimgView1.bounds.size cornerRadius:10 corners:UIRectCornerAllCorners backgroundColor:[UIColor lightGrayColor] isEqualScale:NO isCircle:NO];
   
   UIImageView *bimgView3 = [[UIImageView alloc] init];
   bimgView3.frame = CGRectMake(200, 300, 80, 80);
