@@ -137,9 +137,9 @@ static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
     if (![[HYBImageClipedManager shared].fileManager fileExistsAtPath:[self hyb_cachePath] isDirectory:nil]) {
       NSError *error = nil;
       BOOL isOK = [[HYBImageClipedManager shared].fileManager createDirectoryAtPath:[self hyb_cachePath]
-                                            withIntermediateDirectories:YES
-                                                             attributes:nil
-                                                                  error:&error];
+                                                        withIntermediateDirectories:YES
+                                                                         attributes:nil
+                                                                              error:&error];
       if (isOK && error == nil) {
 #ifdef kHYBImageCliped
         NSLog(@"create folder HYBClipedImages ok");
@@ -149,17 +149,21 @@ static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
       }
     }
     
-    NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
-    NSData *data = UIImagePNGRepresentation(clipedImage);
-    BOOL isOk = [[HYBImageClipedManager shared].fileManager createFileAtPath:path contents:data attributes:nil];
-    if (isOk) {
+    @autoreleasepool {
+      NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
+      NSData *data = UIImagePNGRepresentation(clipedImage);
+      BOOL isOk = [[HYBImageClipedManager shared].fileManager createFileAtPath:path
+                                                                      contents:data
+                                                                    attributes:nil];
+      if (isOk) {
 #ifdef kHYBImageCliped
-      NSLog(@"save cliped image to disk ok, key path is %@", path);
+        NSLog(@"save cliped image to disk ok, key path is %@", path);
 #endif
-    } else {
+      } else {
 #ifdef kHYBImageCliped
-      NSLog(@"save cliped image to disk fail, key path is %@", path);
+        NSLog(@"save cliped image to disk fail, key path is %@", path);
 #endif
+      }
     }
   });
 }
@@ -197,7 +201,7 @@ static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
         for (NSString *subpath in array) {
           NSString *path = [directoryPath stringByAppendingPathComponent:subpath];
           NSDictionary *dict = [[HYBImageClipedManager shared].fileManager attributesOfItemAtPath:path
-                                                                                error:&error];
+                                                                                            error:&error];
           if (!error) {
             total += [dict[NSFileSize] unsignedIntegerValue];
           }

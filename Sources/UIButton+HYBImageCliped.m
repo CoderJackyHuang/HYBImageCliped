@@ -62,9 +62,9 @@
 - (void)_private_hyb_setImage:(id)image
                      forState:(UIControlState)state
             isBackgroundImage:(BOOL)isBackImage
-              toSize:(CGSize)targetSize
-        cornerRadius:(CGFloat)cornerRadius
-        isEqualScale:(BOOL)isEqualScale {
+                       toSize:(CGSize)targetSize
+                 cornerRadius:(CGFloat)cornerRadius
+                 isEqualScale:(BOOL)isEqualScale {
   if (image == nil || targetSize.width == 0 || targetSize.height == 0) {
     return;
   }
@@ -84,21 +84,23 @@
   
   __block UIImage *clipedImage = nil;
   dispatch_async(dispatch_get_global_queue(0, 0), ^{
-    clipedImage = [willBeClipedImage hyb_clipToSize:targetSize
-                                       cornerRadius:cornerRadius
-                                            corners:UIRectCornerAllCorners
-                                    backgroundColor:self.backgroundColor
-                                       isEqualScale:isEqualScale
-                                           isCircle:NO];
-    dispatch_async(dispatch_get_main_queue(), ^{
-      if (clipedImage) {
-        if (isBackImage) {
-          [self setBackgroundImage:clipedImage forState:state];
-        } else {
-          [self setImage:clipedImage forState:state];
+    @autoreleasepool {
+      clipedImage = [willBeClipedImage hyb_clipToSize:targetSize
+                                         cornerRadius:cornerRadius
+                                              corners:UIRectCornerAllCorners
+                                      backgroundColor:self.backgroundColor
+                                         isEqualScale:isEqualScale
+                                             isCircle:NO];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (clipedImage) {
+          if (isBackImage) {
+            [self setBackgroundImage:clipedImage forState:state];
+          } else {
+            [self setImage:clipedImage forState:state];
+          }
         }
-      }
-    });
+      });
+    }
   });
 }
 

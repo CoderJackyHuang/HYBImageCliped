@@ -46,6 +46,10 @@
     return;
   }
   
+  // 全局设置就可以
+  // 不缓存~
+//  [HYBImageClipedManager shared].shouldCache = NO;
+  
   self.model = model;
   
   
@@ -55,24 +59,26 @@
       self.imageView.image = image;
     } else {
       __weak __typeof(self) weakSelf = self;
-      UIImage *image = [UIImage imageNamed:@"img5.jpg"];
+        UIImage *image = [UIImage imageNamed:@"img5.jpg"];
       [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (image == nil || error != nil) {
           return;
         }
         
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
-          // 将剪裁后的图片记录下来，下次直接使用
-          UIImage *clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
-                                          cornerRadius:12
-                                       backgroundColor:[UIColor blackColor]
-                                          isEqualScale:YES];
-          dispatch_async(dispatch_get_main_queue(), ^{
-            weakSelf.imageView.image = clipedImage;
-            
-            // 存储到本地
-            [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
-          });
+          @autoreleasepool {
+            // 将剪裁后的图片记录下来，下次直接使用
+            UIImage *clipedImage = [image hyb_clipToSize:weakSelf.imageView.bounds.size
+                                            cornerRadius:12
+                                         backgroundColor:[UIColor blackColor]
+                                            isEqualScale:YES];
+            dispatch_async(dispatch_get_main_queue(), ^{
+              weakSelf.imageView.image = clipedImage;
+              
+              // 存储到本地
+              [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
+            });
+          }
         });
       }];
     }

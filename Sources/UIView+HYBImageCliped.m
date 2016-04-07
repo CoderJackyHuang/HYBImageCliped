@@ -277,29 +277,31 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     willBeClipedImage.hyb_borderColor = self.hyb_borderColor;
     willBeClipedImage.hyb_borderWidth = self.hyb_borderWidth;
     
-    clipedImage = [willBeClipedImage hyb_clipToSize:targetSize
-                                       cornerRadius:cornerRadius
-                                            corners:rectCorner
-                                    backgroundColor:bgColor
-                                       isEqualScale:isEqualScale
-                                           isCircle:isCircle];
-    dispatch_async(dispatch_get_main_queue(), ^{
-      if (clipedImage) {
-        if ([self isKindOfClass:[UIImageView class]]) {
-          UIImageView *imgView = (UIImageView *)self;
-          imgView.image = clipedImage;
-        } else if ([self isKindOfClass:[UIButton class]]) {
-          UIButton *button = (UIButton *)self;
-          [button setImage:clipedImage forState:UIControlStateNormal];
-        } else {
-          self.layer.contents = (__bridge id _Nullable)(clipedImage.CGImage);
+    @autoreleasepool {
+      clipedImage = [willBeClipedImage hyb_clipToSize:targetSize
+                                         cornerRadius:cornerRadius
+                                              corners:rectCorner
+                                      backgroundColor:bgColor
+                                         isEqualScale:isEqualScale
+                                             isCircle:isCircle];
+      dispatch_async(dispatch_get_main_queue(), ^{
+        if (clipedImage) {
+          if ([self isKindOfClass:[UIImageView class]]) {
+            UIImageView *imgView = (UIImageView *)self;
+            imgView.image = clipedImage;
+          } else if ([self isKindOfClass:[UIButton class]]) {
+            UIButton *button = (UIButton *)self;
+            [button setImage:clipedImage forState:UIControlStateNormal];
+          } else {
+            self.layer.contents = (__bridge id _Nullable)(clipedImage.CGImage);
+          }
+          
+          if (callback) {
+            callback(clipedImage);
+          }
         }
-        
-        if (callback) {
-          callback(clipedImage);
-        }
-      }
-    });
+      });
+    }
   });
   
   return willBeClipedImage;
