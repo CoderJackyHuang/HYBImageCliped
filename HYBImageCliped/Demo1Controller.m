@@ -17,12 +17,12 @@
 
   self.view.backgroundColor = [UIColor lightGrayColor];
   
+#pragma mark - 第一排
   // 可以直接使用UIView来显示图片，不要求必须使用UIImageView
   UIView *cornerView1 = [[UIView alloc] init];
   cornerView1.frame = CGRectMake(10, 10, 80, 80);
   [self.view addSubview:cornerView1];
-  
-  cornerView1.backgroundColor = [UIColor redColor];
+//  cornerView1.backgroundColor = [UIColor redColor];
  UIImage *image = [UIImage imageNamed:@"bimg1.jpg"];
  [cornerView1 hyb_setCircleImage:image size:CGSizeMake(80, 80) isEqualScale:YES backgrounColor:[UIColor lightGrayColor] onCliped:^(UIImage *clipedImage) {
    
@@ -33,38 +33,41 @@
   UIImageView *cornerView2 = [[UIImageView alloc] init];
   cornerView2.frame = CGRectMake(100, 10, 80, 80);
   [self.view addSubview:cornerView2];
-  cornerView2.backgroundColor = [UIColor redColor];
+//  cornerView2.backgroundColor = [UIColor lightGrayColor];
   [cornerView2 hyb_setImage:@"bimg5.jpg" cornerRadius:10 rectCorner:UIRectCornerTopLeft | UIRectCornerTopRight onCliped:^(UIImage *clipedImage) {
     // You can cache the cliped image when the control is use in cell that can be reused.
   }];
+
   
   // 当图片的宽高比，与控件的宽高比不相等时，裁剪图片圆角会显示不好或者不显示出来。这是因为压缩后
   // 的图片是等比例压缩的。如果不是等比例压缩，图片就会不清楚。
   UIImageView *cornerView3 = [[UIImageView alloc] init];
   cornerView3.frame = CGRectMake(200, 10, 80, 80);
   [self.view addSubview:cornerView3];
-  cornerView3.backgroundColor = [UIColor redColor];
+//  cornerView3.backgroundColor = [UIColor lightGrayColor];
 //  [cornerView3 hyb_setImage:@"bimg8.jpg" cornerRadius:10 rectCorner:UIRectCornerTopLeft];
-  
   // 由于图片宽远大于高，因此若什么等比例压缩，会看不见大部分图片内容
   [cornerView3 hyb_setImage:@"bimg8.jpg" cornerRadius:10 rectCorner:UIRectCornerTopLeft |UIRectCornerBottomRight isEqualScale:NO onCliped:^(UIImage *clipedImage) {
     
   }];
   
+#pragma mark - 第二排
   UIView *view1 = [[UIView alloc] initWithFrame:CGRectMake(10, 100, 80, 80)];
   view1.backgroundColor = [UIColor greenColor];
+    [self.view addSubview:view1];
   [view1 hyb_addCorner:UIRectCornerTopLeft cornerRadius:10];
-  [self.view addSubview:view1];
+
   
   UIView *view2 = [[UIView alloc] initWithFrame:CGRectMake(100, 100, 80, 80)];
   view2.backgroundColor = [UIColor greenColor];
-  [view2 hyb_addCorner:UIRectCornerTopRight cornerRadius:10];
   [self.view addSubview:view2];
+
+  [view2 hyb_addCorner:UIRectCornerTopRight cornerRadius:10];
 
   UIView *view3 = [[UIView alloc] initWithFrame:CGRectMake(200, 100, 80, 80)];
   view3.backgroundColor = [UIColor greenColor];
-  [view3 hyb_addCorner:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:10];
   [self.view addSubview:view3];
+  [view3 hyb_addCorner:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:10];
 
 
   UIImageView *imgView = [[UIImageView alloc] init];

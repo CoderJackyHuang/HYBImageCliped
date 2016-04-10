@@ -10,6 +10,4 @@
 
 @implementation UIImageView (HYBImageCliped)
 
-
-
 @end

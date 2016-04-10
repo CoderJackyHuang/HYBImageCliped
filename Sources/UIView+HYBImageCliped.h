@@ -20,6 +20,7 @@
 
 /**
  *	裁剪后的图片
+ *  默认所有backgroundColor直取最顶层父视图的backgroundColor，通常已经满足条件了。如果不能满，请手动指定背景颜色
  *
  *	@param clipedImage 裁剪后的图片
  */
@@ -60,7 +61,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
 
 #pragma mark - 边框相关属属性，仅对生成圆形图片和矩形图片有效
 /**
- *	默认为1.0，当小于0时，不会添加边框，仅对生成圆形图片和矩形图片有效
+ *	默认为0.0，当小于0时，不会添加边框，仅对生成圆形图片和矩形图片有效
  */
 @property (nonatomic, assign) CGFloat hyb_borderWidth;
 /**
@@ -76,7 +77,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
  */
 @property (nonatomic, strong) UIColor *hyb_pathColor;
 
-#pragma mark - 给任意UIView添加圆角（非图片）
+#pragma mark - 给任意UIView添加圆角（非图片，性能不如直接使用cornerRadius，但是下面的API支持任意圆角）
 /**
  *	给控件本身添加圆角，不是通过图片实现的。要求控件本身的frame是确定的，非自动布局才行。
  *
@@ -89,6 +90,9 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
    }];
  */
 - (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius;
+
+// 圆角颜色不应该与背景色相同时，传过来
+- (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius backgroundColor:(UIColor *)backgroundColor;
 
 /**
  * corner为UIRectCornerAllCorners，bounds大小已经有才能使用
@@ -112,8 +116,13 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
  *	@param corner       添加哪些圆角
  *	@param cornerRadius	圆角大小
  *	@param targetSize		目标大小，即控件的frame.size
+ *  @param backgroundColor 控件的背景色与剪裁后的背景色是一样的时候，若需要指定为不一样，传此参数。
+ *                         若没有传此参数，默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色
  */
-- (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize;
+- (void)hyb_addCorner:(UIRectCorner)corner
+         cornerRadius:(CGFloat)cornerRadius
+                 size:(CGSize)targetSize
+      backgroundColor:(UIColor *)backgroundColor;
 
 
 #pragma mark - 生成适应大小的图片显示
@@ -141,7 +150,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
  *	@param image			图片名称或者图片对象，甚至支持NSData
  *	@param targetSize	生成指定大小的图片
  *	@param isEqualScale	是否等比例缩放图片
- *  @param backgroundColor 图片背景颜色
+ *  @param backgroundColor 默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色
  *  @parma callback   只有当图片真正被裁剪成功后，才会回调，返回裁剪后的图片
  *
  *	@return 裁剪前的图片
@@ -172,7 +181,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
  *	@param image						图片名称或者图片对象，甚至支持NSData
  *	@param targetSize			  生成的图片目标大小
  *	@param cornerRaidus		  圆角大小
- *	@param backgroundColor	背景颜色，用于解决图层混合。
+ *	@param backgroundColor	背景颜色，用于解决图层混合。默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色
  *	@param isEqualScale			是否等比例缩放图片
  *  @parma callback   只有当图片真正被裁剪成功后，才会回调，返回裁剪后的图片
  *
@@ -207,7 +216,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
  *	@param targetSize			  生成图片大小
  *	@param cornerRaidus		  圆角大小
  *	@param rectCorner			  指定哪些添加圆角。如果有多个圆角，可以这样UIRectCornerTopRight|UIRectCornerTopLeft
- *	@param backgroundColor	当带有圆角时，背景颜色可用于解决图层混合问题。
+ *	@param backgroundColor	当带有圆角时，背景颜色可用于解决图层混合问题。默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色
  *	@param isEqualScale			是否等比例缩放图片
  *  @parma callback   只有当图片真正被裁剪成功后，才会回调，返回裁剪后的图片
  *
@@ -221,7 +230,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
              isEqualScale:(BOOL)isEqualScale
                  onCliped:(HYBClipedCallback)callback;
 /**
- * 生成任意圆角的图片来填充控件。默认背景色为白色、isEqualScale=YES
+ * 生成任意圆角的图片来填充控件。默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色、isEqualScale=YES
  */
 - (UIImage *)hyb_setImage:(id)image
                      size:(CGSize)targetSize
@@ -229,7 +238,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
                rectCorner:(UIRectCorner)rectCorner
                  onCliped:(HYBClipedCallback)callback;
 /**
- * 生成任意圆角的图片来填充控件。默认背景色为白色。如果控件本身大小确定，
+ * 生成任意圆角的图片来填充控件。默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色。如果控件本身大小确定，
  * 可以直接使用此API来生成与控件大小相同的图片来填充。
  */
 - (UIImage *)hyb_setImage:(id)image
@@ -238,7 +247,7 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
              isEqualScale:(BOOL)isEqualScale
                  onCliped:(HYBClipedCallback)callback;
 /**
- * 生成任意圆角的图片来填充控件。默认背景色为白色、isEqualScale=YES。如果控件本身大小确定，
+ * 生成任意圆角的图片来填充控件。默认取最顶层父视图的背景色，若为透明，则取本身背景色，若也为透明，则取白色、isEqualScale=YES。如果控件本身大小确定，
  * 可以直接使用此API来生成与控件大小相同的图片来填充。
  */
 - (UIImage *)hyb_setImage:(id)image

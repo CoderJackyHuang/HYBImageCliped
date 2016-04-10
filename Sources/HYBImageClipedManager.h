@@ -26,6 +26,9 @@ typedef void(^HYBCacheImage)(UIImage *image);
  */
 @property (nonatomic, assign) BOOL shouldCache;
 
+/// 外部尽量不要使用，供内部使用的
+@property (nonatomic, strong, readonly) NSCache *sharedCache;
+
 + (instancetype)shared;
 
 /**

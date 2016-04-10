@@ -54,17 +54,26 @@
   
   
   // 异步读取图片，先从缓存读取，若没有读取到则从文件读取。若都没有取到，则走网络
-  [HYBImageClipedManager clipedImageFromDiskWithKey:model.url completion:^(UIImage *image) {
-    if (image) {
-      self.imageView.image = image;
-    } else {
+//  [HYBImageClipedManager clipedImageFromDiskWithKey:model.url completion:^(UIImage *image) {
+//    if (image) {
+//      if ([model.url isEqualToString:self.model.url]) {
+//        self.imageView.image = image;
+//      } else {
+//        NSLog(@"已复用，无须赋值");
+//      }
+//    } else {
       __weak __typeof(self) weakSelf = self;
-        UIImage *image = [UIImage imageNamed:@"img5.jpg"];
-      [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:image options:SDWebImageRetryFailed completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
+       __block UIImage *holderImage = [UIImage imageNamed:@"img5.jpg"];
+      [self.imageView sd_setImageWithURL:[NSURL URLWithString:model.url] placeholderImage:holderImage options:SDWebImageRetryFailed | SDWebImageAvoidAutoSetImage completed:^(UIImage *image, NSError *error, SDImageCacheType cacheType, NSURL *imageURL) {
         if (image == nil || error != nil) {
           return;
         }
+
+//        [weakSelf.imageView hyb_setImage:image size:weakSelf.imageView.bounds.size cornerRadius:12 backgroundColor:[UIColor blackColor] isEqualScale:YES onCliped:^(UIImage *clipedImage) {
+//          [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
+//        }];
         
+        // 下面这种方式会更好，可以解决滚动过快时，防止再赋值。其已经再次被复用时，不应该再赋值了
         dispatch_async(dispatch_get_global_queue(0, 0), ^{
           @autoreleasepool {
             // 将剪裁后的图片记录下来，下次直接使用
@@ -72,18 +81,22 @@
                                             cornerRadius:12
                                          backgroundColor:[UIColor blackColor]
                                             isEqualScale:YES];
+            // 存储到本地，若开启了缓存到内存，则也一起缓存内存，以提高性能
+//            [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
+            
             dispatch_async(dispatch_get_main_queue(), ^{
-              weakSelf.imageView.image = clipedImage;
-              
-              // 存储到本地
-              [HYBImageClipedManager storeClipedImage:clipedImage toDiskWithKey:model.url];
+              if ([model.url isEqualToString:weakSelf.model.url]) {
+                weakSelf.imageView.image = clipedImage;
+              } else {
+                NSLog(@"已复用，无须赋值");
+              }
             });
           }
         });
       }];
-    }
-  }];
-  
+//    }
+//  }];
+
   //  // 从本地读取，若有则直接使用之。
   //  // 由于剪裁的图片通常都不小，所以为了解决内存暴涨问题，图片不会缓存到内存中，只是临时使用
   //  // 这种方式带来的好处就是内存不会暴涨

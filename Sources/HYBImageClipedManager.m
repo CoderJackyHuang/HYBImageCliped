@@ -8,6 +8,7 @@
 
 #import "HYBImageClipedManager.h"
 #import <CommonCrypto/CommonDigest.h>
+#import <objc/message.h>
 
 static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
   return image.size.height * image.size.width * image.scale * image.scale;
@@ -32,6 +33,10 @@ static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
   });
   
   return s_manager;
+}
+
+- (NSCache *)sharedCache {
+  return self.cache;
 }
 
 - (instancetype)init {
@@ -108,6 +113,11 @@ static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
       NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
       image = [UIImage imageWithContentsOfFile:path];
       
+      if (image != nil && [HYBImageClipedManager shared].shouldCache) {
+        NSUInteger cost = HYBCacheCostForImage(image);
+        [[HYBImageClipedManager shared].cache setObject:image forKey:subpath cost:cost];
+      }
+      
       dispatch_async(dispatch_get_main_queue(), ^{
         if (completion) {
           completion(image);
@@ -151,7 +161,8 @@ static inline NSUInteger HYBCacheCostForImage(UIImage *image) {
     
     @autoreleasepool {
       NSString *path = [[self hyb_cachePath] stringByAppendingPathComponent:subpath];
-      NSData *data = UIImagePNGRepresentation(clipedImage);
+      
+      NSData *data = UIImageJPEGRepresentation(clipedImage, 1.0);
       BOOL isOk = [[HYBImageClipedManager shared].fileManager createFileAtPath:path
                                                                       contents:data
                                                                     attributes:nil];

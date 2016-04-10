@@ -85,12 +85,18 @@
   __block UIImage *clipedImage = nil;
   dispatch_async(dispatch_get_global_queue(0, 0), ^{
     @autoreleasepool {
+      willBeClipedImage.hyb_pathColor = self.hyb_pathColor;
+      willBeClipedImage.hyb_pathWidth = self.hyb_pathWidth;
+      willBeClipedImage.hyb_borderColor = self.hyb_borderColor;
+      willBeClipedImage.hyb_borderWidth = self.hyb_borderWidth;
+      
       clipedImage = [willBeClipedImage hyb_clipToSize:targetSize
                                          cornerRadius:cornerRadius
                                               corners:UIRectCornerAllCorners
                                       backgroundColor:self.backgroundColor
                                          isEqualScale:isEqualScale
                                              isCircle:NO];
+      
       dispatch_async(dispatch_get_main_queue(), ^{
         if (clipedImage) {
           if (isBackImage) {

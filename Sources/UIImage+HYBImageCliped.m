@@ -24,7 +24,7 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     return borderWidth.doubleValue;
   }
   
-  return 1;
+  return 0;
 }
 
 - (void)setHyb_borderWidth:(CGFloat)hyb_borderWidth {
@@ -183,35 +183,52 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
                          toSize:(CGSize)targetSize
                    cornerRadius:(CGFloat)cornerRadius
                 backgroundColor:(UIColor *)backgroundColor {
-  UIGraphicsBeginImageContextWithOptions(targetSize, YES, [UIScreen mainScreen].scale);
+  return [self hyb_imageWithColor:color
+                           toSize:targetSize
+                     cornerRadius:cornerRadius
+                  backgroundColor:backgroundColor
+                      borderColor:nil
+                      borderWidth:0];
+}
+
++ (UIImage *)hyb_imageWithColor:(UIColor *)color toSize:(CGSize)targetSize cornerRadius:(CGFloat)cornerRadius backgroundColor:(UIColor *)backgroundColor borderColor:(UIColor *)borderColor borderWidth:(CGFloat)borderWidth {
+  UIGraphicsBeginImageContextWithOptions(targetSize, cornerRadius == 0, [UIScreen mainScreen].scale);
   
   CGRect targetRect = (CGRect){0, 0, targetSize.width, targetSize.height};
+  UIImage *finalImage = nil;
   
   CGContextRef context = UIGraphicsGetCurrentContext();
   CGContextSetFillColorWithColor(context, [color CGColor]);
-  CGContextFillRect(context, targetRect);
-  
-  UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsEndImageContext();
-  
-  if (cornerRadius != 0) {
-    UIGraphicsBeginImageContextWithOptions(targetSize, YES, [UIScreen mainScreen].scale);
-    
-    if (backgroundColor) {
-      [backgroundColor setFill];
-      CGContextFillRect(UIGraphicsGetCurrentContext(), targetRect);
+  if (cornerRadius == 0) {
+    if (borderWidth > 0) {
+      CGContextSetStrokeColorWithColor(context, borderColor.CGColor);
+      CGContextSetLineWidth(context, borderWidth);
+      CGContextFillRect(context, targetRect);
+      
+      targetRect = CGRectMake(borderWidth / 2, borderWidth / 2, targetSize.width - borderWidth, targetSize.height - borderWidth);
+      CGContextStrokeRect(context, targetRect);
+    } else {
+      CGContextFillRect(context, targetRect);
     }
-    
+  } else {
+    targetRect = CGRectMake(borderWidth / 2, borderWidth / 2, targetSize.width - borderWidth, targetSize.height - borderWidth);
     UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:targetRect
                                                byRoundingCorners:UIRectCornerAllCorners
                                                      cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
     CGContextAddPath(UIGraphicsGetCurrentContext(), path.CGPath);
-    CGContextClip(UIGraphicsGetCurrentContext());
-    [finalImage drawInRect:targetRect];
-    finalImage = UIGraphicsGetImageFromCurrentImageContext();
-    UIGraphicsEndImageContext();
+    
+    if (borderWidth > 0) {
+      CGContextSetStrokeColorWithColor(context, borderColor.CGColor);
+      CGContextSetLineWidth(context, borderWidth);
+      CGContextDrawPath(context, kCGPathFillStroke);
+    } else {
+      CGContextDrawPath(context, kCGPathFill);
+    }
   }
   
+  finalImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+
   return finalImage;
 }
 
@@ -220,7 +237,6 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
 }
 
 #pragma mark - Private
-/*
 - (UIImage *)hyb_private_clipImageToSize:(CGSize)targetSize
                             cornerRadius:(CGFloat)cornerRadius
                                  corners:(UIRectCorner)corners
@@ -247,131 +263,9 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     targetRect = (CGRect){0, 0, width, width};
   }
   
-  UIGraphicsBeginImageContextWithOptions(targetRect.size, YES, [UIScreen mainScreen].scale);
-  
-  if (backgroundColor) {
-    [backgroundColor setFill];
-    CGContextFillRect(UIGraphicsGetCurrentContext(), targetRect);
-  }
-  
-  
-  CGFloat pathWidth = self.hyb_pathWidth;
-  CGFloat borderWidth = self.hyb_borderWidth;
-  
-  if (pathWidth > 0 && borderWidth > 0 && (isCircle || cornerRadius == 0)) {
-    UIColor *borderColor = self.hyb_borderColor;
-    UIColor *pathColor = self.hyb_pathColor;
-    
-    CGRect rect = targetRect;
-    CGRect rectImage = rect;
-    rectImage.origin.x += pathWidth;
-    rectImage.origin.y += pathWidth;
-    rectImage.size.width -= pathWidth * 2.0;
-    rectImage.size.height -= pathWidth * 2.0;
-    
-    CGContextRef ctx = UIGraphicsGetCurrentContext();
-    
-    if (isCircle) {
-      CGContextAddEllipseInRect(ctx, rect);
-    } else {
-      CGContextAddRect(ctx, rect);
-    }
-    
-    CGContextClip(ctx);
-    [self drawInRect:rectImage];
-    
-    // 添加内线和外线
-    rectImage.origin.x -= borderWidth / 2.0;
-    rectImage.origin.y -= borderWidth / 2.0;
-    rectImage.size.width += borderWidth;
-    rectImage.size.height += borderWidth;
-    
-    rect.origin.x += borderWidth / 2.0;
-    rect.origin.y += borderWidth / 2.0;
-    rect.size.width -= borderWidth;
-    rect.size.height -= borderWidth;
-    
-    CGContextSetStrokeColorWithColor(ctx, [borderColor CGColor]);
-    CGContextSetLineWidth(ctx, borderWidth);
-    
-    if (isCircle) {
-      CGContextStrokeEllipseInRect(ctx, rectImage);
-      CGContextStrokeEllipseInRect(ctx, rect);
-    } else if (cornerRadius == 0) {
-      CGContextStrokeRect(ctx, rectImage);
-      CGContextStrokeRect(ctx, rect);
-    }
-    
-    float centerPathWidth = pathWidth - borderWidth * 2.0;
-    CGContextSetLineWidth(ctx, centerPathWidth);
-    CGContextSetStrokeColorWithColor(ctx, [pathColor CGColor]);
-    
-    rectImage.origin.x -= borderWidth / 2.0 + centerPathWidth / 2.0;
-    rectImage.origin.y -= borderWidth / 2.0 + centerPathWidth / 2.0;
-    rectImage.size.width += borderWidth + centerPathWidth;
-    rectImage.size.height += borderWidth + centerPathWidth;
-    
-    if (isCircle) {
-      CGContextStrokeEllipseInRect(ctx, rectImage);
-    } else if (cornerRadius == 0) {
-      CGContextStrokeRect(ctx, rectImage);
-    }
-  } else {
-    if (isCircle) {
-      CGContextAddPath(UIGraphicsGetCurrentContext(),
-                       [UIBezierPath bezierPathWithRoundedRect:targetRect
-                                                  cornerRadius:targetRect.size.width / 2].CGPath);
-      CGContextClip(UIGraphicsGetCurrentContext());
-    } else if (cornerRadius > 0) {
-      UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:targetRect
-                                                 byRoundingCorners:corners
-                                                       cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
-      CGContextAddPath(UIGraphicsGetCurrentContext(), path.CGPath);
-      CGContextClip(UIGraphicsGetCurrentContext());
-    }
-    
-    [self drawInRect:targetRect];
-  }
-  
-  UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
-  UIGraphicsEndImageContext();
-  
-  //  NSLog(@"time:%f  originalImageSize: %@, targetSize: %@",
-  //        CFAbsoluteTimeGetCurrent() - timerval,
-  //        NSStringFromCGSize(imgSize),
-  //        NSStringFromCGSize(targetSize));
-  
-  return finalImage;
-}
-*/
-
-- (UIImage *)hyb_private_clipImageToSize:(CGSize)targetSize
-                            cornerRadius:(CGFloat)cornerRadius
-                                 corners:(UIRectCorner)corners
-                         backgroundColor:(UIColor *)backgroundColor
-                            isEqualScale:(BOOL)isEqualScale
-                                isCircle:(BOOL)isCircle {
-  if (targetSize.width <= 0 || targetSize.height <= 0) {
-    return self;
-  }
-  //  NSTimeInterval timerval = CFAbsoluteTimeGetCurrent();
-  
-  CGSize imgSize = self.size;
-  
-  CGSize resultSize = targetSize;
-  if (isEqualScale) {
-    CGFloat x = MAX(targetSize.width / imgSize.width, targetSize.height / imgSize.height);
-    resultSize = CGSizeMake(x * imgSize.width, x * imgSize.height);
-  }
-  
-  CGRect targetRect = (CGRect){0, 0, resultSize.width, resultSize.height};
-  
-  if (isCircle) {
-    CGFloat width = MIN(resultSize.width, resultSize.height);
-    targetRect = (CGRect){0, 0, width, width};
-  }
-  
-  UIGraphicsBeginImageContextWithOptions(targetRect.size, YES, [UIScreen mainScreen].scale);
+  UIGraphicsBeginImageContextWithOptions(targetRect.size,
+                                         backgroundColor != nil,
+                                         [UIScreen mainScreen].scale);
   
   if (backgroundColor) {
     [backgroundColor setFill];
@@ -426,18 +320,20 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     }
     
     float centerPathWidth = pathWidth - borderWidth * 2.0;
-    CGContextSetLineWidth(ctx, centerPathWidth);
-    CGContextSetStrokeColorWithColor(ctx, [pathColor CGColor]);
-    
-    rectImage.origin.x -= borderWidth / 2.0 + centerPathWidth / 2.0;
-    rectImage.origin.y -= borderWidth / 2.0 + centerPathWidth / 2.0;
-    rectImage.size.width += borderWidth + centerPathWidth;
-    rectImage.size.height += borderWidth + centerPathWidth;
-    
-    if (isCircle) {
-      CGContextStrokeEllipseInRect(ctx, rectImage);
-    } else if (cornerRadius == 0) {
-      CGContextStrokeRect(ctx, rectImage);
+    if (centerPathWidth > 0) {
+      CGContextSetLineWidth(ctx, centerPathWidth);
+      CGContextSetStrokeColorWithColor(ctx, [pathColor CGColor]);
+      
+      rectImage.origin.x -= borderWidth / 2.0 + centerPathWidth / 2.0;
+      rectImage.origin.y -= borderWidth / 2.0 + centerPathWidth / 2.0;
+      rectImage.size.width += borderWidth + centerPathWidth;
+      rectImage.size.height += borderWidth + centerPathWidth;
+      
+      if (isCircle) {
+        CGContextStrokeEllipseInRect(ctx, rectImage);
+      } else if (cornerRadius == 0) {
+        CGContextStrokeRect(ctx, rectImage);
+      }
     }
   } else if (pathWidth > 0 && borderWidth > 0 && cornerRadius > 0 && !isCircle) {
     UIColor *borderColor = self.hyb_borderColor;
@@ -471,9 +367,6 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     UIBezierPath *path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage byRoundingCorners:corners cornerRadii:CGSizeMake(cornerRadius - minusPath1, cornerRadius - minusPath1)];
     CGContextAddPath(ctx, path1.CGPath);
     
-    CGContextSetStrokeColorWithColor(ctx, [borderColor CGColor]);
-    CGContextSetLineWidth(ctx, borderWidth);
-    
     UIBezierPath *path2 = [UIBezierPath bezierPathWithRoundedRect:rect
                                                 byRoundingCorners:corners
                                                       cornerRadii:CGSizeMake(cornerRadius + minusPath1 ,cornerRadius + minusPath1)];
@@ -481,19 +374,47 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     CGContextStrokePath(ctx);
     
     float centerPathWidth = pathWidth - borderWidth * 2.0;
-    CGContextSetLineWidth(ctx, centerPathWidth);
-    CGContextSetStrokeColorWithColor(ctx, [pathColor CGColor]);
+    if (centerPathWidth > 0) {
+      CGContextSetLineWidth(ctx, centerPathWidth);
+      CGContextSetStrokeColorWithColor(ctx, [pathColor CGColor]);
+      
+      rectImage.origin.x -= borderWidth / 2.0 + centerPathWidth / 2.0;
+      rectImage.origin.y -= borderWidth / 2.0 + centerPathWidth / 2.0;
+      rectImage.size.width += borderWidth + centerPathWidth;
+      rectImage.size.height += borderWidth + centerPathWidth;
+      
+      UIBezierPath *path3 = [UIBezierPath bezierPathWithRoundedRect:rectImage
+                                                  byRoundingCorners:corners
+                                                        cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
+      CGContextAddPath(ctx, path3.CGPath);
+      CGContextStrokePath(ctx);
+    }
+  } else if (pathWidth <= 0 && borderWidth > 0 && (cornerRadius > 0 || isCircle)) {
+    UIColor *borderColor = self.hyb_borderColor;
     
-    rectImage.origin.x -= borderWidth / 2.0 + centerPathWidth / 2.0;
-    rectImage.origin.y -= borderWidth / 2.0 + centerPathWidth / 2.0;
-    rectImage.size.width += borderWidth + centerPathWidth;
-    rectImage.size.height += borderWidth + centerPathWidth;
+    CGRect rect = targetRect;
+    CGRect rectImage = rect;
+    rectImage.origin.x += borderWidth / 2;
+    rectImage.origin.y += borderWidth / 2;
+    rectImage.size.width -= borderWidth;
+    rectImage.size.height -= borderWidth;
     
-    UIBezierPath *path3 = [UIBezierPath bezierPathWithRoundedRect:rectImage
-                                                byRoundingCorners:corners
-                                                      cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
-    CGContextAddPath(ctx, path3.CGPath);
-    CGContextStrokePath(ctx);
+    UIImage *image = [self _hyb_scaleToSize:rectImage.size backgroundColor:backgroundColor];
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(ctx, [UIColor colorWithPatternImage:image].CGColor);
+    CGContextSetStrokeColorWithColor(ctx, [borderColor CGColor]);
+    CGContextSetLineWidth(ctx, borderWidth);
+    
+    UIBezierPath *path1 = nil;
+    if (!isCircle) {
+      CGFloat minusPath1 = borderWidth / 2;
+      path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage byRoundingCorners:corners cornerRadii:CGSizeMake(cornerRadius - minusPath1, cornerRadius - minusPath1)];
+    } else {
+      path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage byRoundingCorners:corners cornerRadii:CGSizeMake(rectImage.size.width / 2, rectImage.size.width / 2)];
+    }
+    
+    CGContextAddPath(ctx, path1.CGPath);
+    CGContextDrawPath(ctx, kCGPathFillStroke);
   } else {
     if (isCircle) {
       CGContextAddPath(UIGraphicsGetCurrentContext(),
@@ -520,6 +441,24 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
   //        NSStringFromCGSize(targetSize));
   
   return finalImage;
+}
+
+- (UIImage *)_hyb_scaleToSize:(CGSize)size backgroundColor:(UIColor *)backgroundColor {
+  CGRect rect = CGRectMake(0, 0, size.width, size.height);
+  UIGraphicsBeginImageContextWithOptions(size, NO, UIScreen.mainScreen.scale);
+  
+  if (backgroundColor) {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, backgroundColor.CGColor);
+    CGContextAddRect(context, rect);
+    CGContextDrawPath(context, kCGPathFillStroke); //根据坐标绘制路径
+  }
+  
+  [self drawInRect:CGRectMake(0, 0, size.width, size.height)];
+  UIImage *scaledImage = UIGraphicsGetImageFromCurrentImageContext();
+  UIGraphicsEndImageContext();
+  
+  return scaledImage;
 }
 
 @end

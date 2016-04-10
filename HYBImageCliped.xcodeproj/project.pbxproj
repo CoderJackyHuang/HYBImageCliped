@@ -78,6 +78,14 @@
 		690DC7021CAE6122003F2201 /* HYBGridModel.m in Sources */ = {isa = PBXBuildFile; fileRef = 690DC6FC1CAE6122003F2201 /* HYBGridModel.m */; };
 		690DC7031CAE6122003F2201 /* HYBGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 690DC6FE1CAE6122003F2201 /* HYBGridViewController.m */; };
 		690DC7041CAE6122003F2201 /* HYBGridViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 690DC6FE1CAE6122003F2201 /* HYBGridViewController.m */; };
+		691CFDDD1CB7B41400723758 /* HYBCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDDC1CB7B41400723758 /* HYBCell1.m */; };
+		691CFDDE1CB7B41400723758 /* HYBCell1.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDDC1CB7B41400723758 /* HYBCell1.m */; };
+		691CFDE11CB7B41D00723758 /* HYBCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDE01CB7B41D00723758 /* HYBCell2.m */; };
+		691CFDE21CB7B41D00723758 /* HYBCell2.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDE01CB7B41D00723758 /* HYBCell2.m */; };
+		691CFDE51CB7B42D00723758 /* HYBVC1.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDE41CB7B42D00723758 /* HYBVC1.m */; };
+		691CFDE61CB7B42D00723758 /* HYBVC1.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDE41CB7B42D00723758 /* HYBVC1.m */; };
+		691CFDE91CB7B43900723758 /* HYBVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDE81CB7B43900723758 /* HYBVC2.m */; };
+		691CFDEA1CB7B43900723758 /* HYBVC2.m in Sources */ = {isa = PBXBuildFile; fileRef = 691CFDE81CB7B43900723758 /* HYBVC2.m */; };
 		691DFBC01CAE6D57007CA458 /* bimg1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 691DFBB31CAE6D57007CA458 /* bimg1.jpg */; };
 		691DFBC11CAE6D57007CA458 /* bimg1.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 691DFBB31CAE6D57007CA458 /* bimg1.jpg */; };
 		691DFBC21CAE6D57007CA458 /* bimg10.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 691DFBB41CAE6D57007CA458 /* bimg10.jpg */; };
@@ -220,6 +228,14 @@
 		690DC6FC1CAE6122003F2201 /* HYBGridModel.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBGridModel.m; sourceTree = "<group>"; };
 		690DC6FD1CAE6122003F2201 /* HYBGridViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYBGridViewController.h; sourceTree = "<group>"; };
 		690DC6FE1CAE6122003F2201 /* HYBGridViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBGridViewController.m; sourceTree = "<group>"; };
+		691CFDDB1CB7B41400723758 /* HYBCell1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYBCell1.h; sourceTree = "<group>"; };
+		691CFDDC1CB7B41400723758 /* HYBCell1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBCell1.m; sourceTree = "<group>"; };
+		691CFDDF1CB7B41D00723758 /* HYBCell2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYBCell2.h; sourceTree = "<group>"; };
+		691CFDE01CB7B41D00723758 /* HYBCell2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBCell2.m; sourceTree = "<group>"; };
+		691CFDE31CB7B42D00723758 /* HYBVC1.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYBVC1.h; sourceTree = "<group>"; };
+		691CFDE41CB7B42D00723758 /* HYBVC1.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBVC1.m; sourceTree = "<group>"; };
+		691CFDE71CB7B43900723758 /* HYBVC2.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = HYBVC2.h; sourceTree = "<group>"; };
+		691CFDE81CB7B43900723758 /* HYBVC2.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = HYBVC2.m; sourceTree = "<group>"; };
 		691DFBB31CAE6D57007CA458 /* bimg1.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bimg1.jpg; sourceTree = "<group>"; };
 		691DFBB41CAE6D57007CA458 /* bimg10.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bimg10.jpg; sourceTree = "<group>"; };
 		691DFBB51CAE6D57007CA458 /* bimg11.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = bimg11.jpg; sourceTree = "<group>"; };
@@ -311,6 +327,7 @@
 		690CA68F1CAD196D00E2F50B /* HYBImageCliped */ = {
 			isa = PBXGroup;
 			children = (
+				691CFDDA1CB7B3A300723758 /* Demo2 */,
 				6938803D1CAF6B0500956618 /* SDWebImage */,
 				691DFBB21CAE6D57007CA458 /* bigimages */,
 				690DC6F91CAE6122003F2201 /* HYBGridCell.h */,
@@ -423,6 +440,21 @@
 				690DC6DF1CAE1ADD003F2201 /* img9.jpg */,
 			);
 			path = images;
+			sourceTree = "<group>";
+		};
+		691CFDDA1CB7B3A300723758 /* Demo2 */ = {
+			isa = PBXGroup;
+			children = (
+				691CFDDB1CB7B41400723758 /* HYBCell1.h */,
+				691CFDDC1CB7B41400723758 /* HYBCell1.m */,
+				691CFDDF1CB7B41D00723758 /* HYBCell2.h */,
+				691CFDE01CB7B41D00723758 /* HYBCell2.m */,
+				691CFDE31CB7B42D00723758 /* HYBVC1.h */,
+				691CFDE41CB7B42D00723758 /* HYBVC1.m */,
+				691CFDE71CB7B43900723758 /* HYBVC2.h */,
+				691CFDE81CB7B43900723758 /* HYBVC2.m */,
+			);
+			name = Demo2;
 			sourceTree = "<group>";
 		};
 		691DFBB21CAE6D57007CA458 /* bigimages */ = {
@@ -638,6 +670,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				693880731CAF6B0500956618 /* UIImage+GIF.m in Sources */,
+				691CFDE91CB7B43900723758 /* HYBVC2.m in Sources */,
 				690DC6A11CAD7268003F2201 /* MASViewConstraint.m in Sources */,
 				690DC6FF1CAE6122003F2201 /* HYBGridCell.m in Sources */,
 				690CA6BC1CAD315600E2F50B /* UIImageView+HYBImageCliped.m in Sources */,
@@ -646,15 +679,18 @@
 				693880711CAF6B0500956618 /* UIButton+WebCache.m in Sources */,
 				690DC6781CAD723C003F2201 /* Demo1Controller.m in Sources */,
 				693880D01CAFDC2D00956618 /* HYBImageClipedManager.m in Sources */,
+				691CFDDD1CB7B41400723758 /* HYBCell1.m in Sources */,
 				693880751CAF6B0500956618 /* UIImage+MultiFormat.m in Sources */,
 				690CA6951CAD196D00E2F50B /* AppDelegate.m in Sources */,
 				693880671CAF6B0500956618 /* SDWebImageDecoder.m in Sources */,
+				691CFDE11CB7B41D00723758 /* HYBCell2.m in Sources */,
 				690DC6971CAD7268003F2201 /* MASCompositeConstraint.m in Sources */,
 				6938807B1CAF6B0500956618 /* UIImageView+WebCache.m in Sources */,
 				690DC69B1CAD7268003F2201 /* MASConstraintMaker.m in Sources */,
 				690DC6A71CAD7268003F2201 /* View+MASAdditions.m in Sources */,
 				693880611CAF6B0500956618 /* NSData+ImageContentType.m in Sources */,
 				693880691CAF6B0500956618 /* SDWebImageDownloader.m in Sources */,
+				691CFDE51CB7B42D00723758 /* HYBVC1.m in Sources */,
 				690DC69D1CAD7268003F2201 /* MASLayoutConstraint.m in Sources */,
 				690DC6A91CAD7268003F2201 /* ViewController+MASAdditions.m in Sources */,
 				693880791CAF6B0500956618 /* UIImageView+HighlightedWebCache.m in Sources */,
@@ -683,6 +719,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				691CFDE61CB7B42D00723758 /* HYBVC1.m in Sources */,
 				6938807A1CAF6B0500956618 /* UIImageView+HighlightedWebCache.m in Sources */,
 				690DC6A41CAD7268003F2201 /* NSArray+MASAdditions.m in Sources */,
 				6938806E1CAF6B0500956618 /* SDWebImageManager.m in Sources */,
@@ -701,6 +738,7 @@
 				693880741CAF6B0500956618 /* UIImage+GIF.m in Sources */,
 				693880D11CAFDC2D00956618 /* HYBImageClipedManager.m in Sources */,
 				6938807E1CAF6B0500956618 /* UIView+WebCacheOperation.m in Sources */,
+				691CFDE21CB7B41D00723758 /* HYBCell2.m in Sources */,
 				690CA6AB1CAD196D00E2F50B /* HYBImageClipedTests.m in Sources */,
 				690DC6A01CAD7268003F2201 /* MASViewAttribute.m in Sources */,
 				693880761CAF6B0500956618 /* UIImage+MultiFormat.m in Sources */,
@@ -708,8 +746,10 @@
 				693880621CAF6B0500956618 /* NSData+ImageContentType.m in Sources */,
 				690DC7041CAE6122003F2201 /* HYBGridViewController.m in Sources */,
 				6938806C1CAF6B0500956618 /* SDWebImageDownloaderOperation.m in Sources */,
+				691CFDEA1CB7B43900723758 /* HYBVC2.m in Sources */,
 				693880601CAF6B0500956618 /* MKAnnotationView+WebCache.m in Sources */,
 				690DC6A61CAD7268003F2201 /* NSLayoutConstraint+MASDebugAdditions.m in Sources */,
+				691CFDDE1CB7B41400723758 /* HYBCell1.m in Sources */,
 				690DC6751CAD71DC003F2201 /* HYBBaseViewController.m in Sources */,
 				690DC6981CAD7268003F2201 /* MASCompositeConstraint.m in Sources */,
 				690DC69E1CAD7268003F2201 /* MASLayoutConstraint.m in Sources */,

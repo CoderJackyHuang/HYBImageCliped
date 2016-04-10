@@ -19,11 +19,11 @@
 
 #pragma mark - 边框相关属属性，仅对生成圆形图片和矩形图片有效
 /**
- *	默认为1.0，当小于0时，不会添加边框，仅对生成圆形图片和矩形图片有效
+ *	默认为0，当<=0时，不会添加边框
  */
 @property (nonatomic, assign) CGFloat hyb_borderWidth;
 /**
- *	当小于0时，不会添加边框。默认为0.仅对生成圆形图片和矩形图片有效。要求pathwidth > 2*borderwidth
+ *	当小于0时，不会添加边框。默认为0.仅对生成圆形图片和矩形图片有效。要求pathwidth > 2*borderwidth，否则只添加border而无path
  */
 @property (nonatomic, assign) CGFloat hyb_pathWidth;
 /**
@@ -71,6 +71,14 @@
                          toSize:(CGSize)targetSize
                    cornerRadius:(CGFloat)cornerRadius
                 backgroundColor:(UIColor *)backgroundColor;
+
+// 增加带边框颜色图片
++ (UIImage *)hyb_imageWithColor:(UIColor *)color
+                         toSize:(CGSize)targetSize
+                   cornerRadius:(CGFloat)cornerRadius
+                backgroundColor:(UIColor *)backgroundColor
+                    borderColor:(UIColor *)borderColor
+                    borderWidth:(CGFloat)borderWidth;
 
 #pragma mark - 放大或者缩小图片
 /**
@@ -149,7 +157,6 @@
  * 生成圆形图片，默认为白色背景、isEqualScale为YES
  */
 - (UIImage *)hyb_clipCircleToSize:(CGSize)targetSize;
-
 
 #pragma mark - 最完整的API
 /**
