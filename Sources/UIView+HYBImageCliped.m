@@ -63,8 +63,6 @@
     const CGFloat *colors = CGColorGetComponents(borderColor.CGColor);
     NSUInteger count = CGColorGetNumberOfComponents(borderColor.CGColor);
     
-    NSMutableString *hashStr = [NSMutableString string];
-    
     for (NSUInteger index = 0; index < count; index ++) {
       [hashStr appendString:[NSString stringWithFormat:@"%@", @(colors[index])]];
     }
