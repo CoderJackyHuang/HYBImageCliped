@@ -71,7 +71,7 @@
   [hashStr appendString:[NSString stringWithFormat:@"%@", @(radius)]];
   [hashStr appendString:[NSString stringWithFormat:@"%@", @(border)]];
   
-  return [NSString stringWithFormat:@"%ld", [hashStr hash]];
+  return [NSString stringWithFormat:@"%@", @([hashStr hash])];
 }
 
 
