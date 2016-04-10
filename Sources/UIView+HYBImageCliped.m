@@ -30,6 +30,14 @@
 
 @end
 
+@interface _HYBCornerBorderLayer : CAShapeLayer
+
+@end
+
+@implementation _HYBCornerBorderLayer
+
+@end
+
 @interface HYBImageClipedManager (CorenrImages)
 
 
@@ -223,7 +231,46 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
 }
 
 - (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius size:(CGSize)targetSize backgroundColor:(UIColor *)backgroundColor {
- 
+  if (corner == UIRectCornerAllCorners) {
+    // 缓存起来，这样性能提升很多
+    if (self.hyb_borderWidth > 0 || cornerRadius > 0) {
+      NSString *lastKey = [self hyb_lastBorderImageKey];
+      NSString *key = [[HYBImageClipedManager shared] hyb_hashKeyWithColor:self.backgroundColor radius:cornerRadius border:self.hyb_borderWidth borderColor:self.hyb_borderColor];
+      
+      if (lastKey == nil || ![lastKey isEqualToString:key]) {
+        UIColor *bgColor = [self _private_color:backgroundColor];
+        UIImage *image = [UIImage hyb_imageWithColor:self.backgroundColor toSize:targetSize cornerRadius:cornerRadius backgroundColor:bgColor borderColor:self.hyb_borderColor borderWidth:self.hyb_borderWidth];
+        self.backgroundColor = [UIColor colorWithPatternImage:image];
+        [self setHyb_lastBorderImageKey:key];
+      }
+    }
+  } else {
+    [self.layer.sublayers enumerateObjectsUsingBlock:^(CALayer * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
+      if ([obj isKindOfClass:[_HYBCornerBorderLayer class]]) {
+        return;
+      }
+    }];
+    
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
+                                               byRoundingCorners:corner
+                                                     cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
+    _HYBCornerBorderLayer *borderLayer = [_HYBCornerBorderLayer layer];
+    borderLayer.path = path.CGPath;
+    borderLayer.lineWidth = self.hyb_borderWidth;
+    borderLayer.strokeColor = self.hyb_borderColor.CGColor;
+    borderLayer.fillColor = [UIColor clearColor].CGColor;
+    borderLayer.frame = self.bounds;
+    [self.layer addSublayer:borderLayer];
+    
+    UIColor *bgColor = [self _private_color:backgroundColor];
+    [self _hyb_addCornerImages:corner
+                        radius:cornerRadius
+                          size:targetSize
+                         color:bgColor];
+  }
+}
+
+- (UIColor *)_private_color:(UIColor *)backgroundColor {
   UIColor *bgColor = nil;
   if (backgroundColor == nil || CGColorEqualToColor(backgroundColor.CGColor, [UIColor clearColor].CGColor)) {
     UIView *superview = self.superview;
@@ -248,31 +295,7 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     bgColor = [UIColor whiteColor];
   }
   
-  // 缓存起来，这样性能提升很多
-  if (self.hyb_borderWidth > 0 || cornerRadius > 0) {
-    NSString *lastKey = [self hyb_lastBorderImageKey];
-    NSString *key = [[HYBImageClipedManager shared] hyb_hashKeyWithColor:self.backgroundColor radius:cornerRadius border:self.hyb_borderWidth borderColor:self.hyb_borderColor];
-    
-    if (lastKey == nil || ![lastKey isEqualToString:key]) {
-      UIImage *image = [UIImage hyb_imageWithColor:self.backgroundColor toSize:targetSize cornerRadius:cornerRadius backgroundColor:bgColor borderColor:self.hyb_borderColor borderWidth:self.hyb_borderWidth];
-      self.backgroundColor = [UIColor colorWithPatternImage:image];
-      [self setHyb_lastBorderImageKey:key];
-    }
-  }
-  
-
-//    self.backgroundColor = [UIColor colorWithPatternImage:image];
-  
-////    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
-////                                               byRoundingCorners:corner
-////                                                     cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
-////    CAShapeLayer *borderLayer = [CAShapeLayer layer];
-////    borderLayer.path = path.CGPath;
-////    borderLayer.lineWidth = self.hyb_borderWidth;
-////    borderLayer.strokeColor = self.hyb_borderColor.CGColor;
-////    borderLayer.fillColor = [UIColor clearColor].CGColor;
-////    borderLayer.frame = self.bounds;
-////    [self.layer addSublayer:borderLayer];
+  return bgColor;
 }
 
 - (void)hyb_addCorner:(UIRectCorner)corner cornerRadius:(CGFloat)cornerRadius backgroundColor:(UIColor *)backgroundColor {
