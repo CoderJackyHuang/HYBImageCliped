@@ -151,8 +151,26 @@ static const char *s_hyb_image_borderColorKey = "s_hyb_image_borderColorKey";
 static const char *s_hyb_image_borderWidthKey = "s_hyb_image_borderWidthKey";
 static const char *s_hyb_image_pathColorKey = "s_hyb_image_pathColorKey";
 static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
+static const char *s_hyb_image_shouldRefreshCache = "s_hyb_image_shouldRefreshCache";
 
 @implementation UIView (HYBImageCliped)
+
+- (BOOL)hyb_shouldRefreshCache {
+  NSNumber *shouldRefresh = objc_getAssociatedObject(self, s_hyb_image_shouldRefreshCache);
+  
+  if ([shouldRefresh respondsToSelector:@selector(boolValue)]) {
+    return shouldRefresh.boolValue;
+  }
+  
+  return NO;
+}
+
+- (void)setHyb_shouldRefreshCache:(BOOL)hyb_shouldRefreshCache {
+  objc_setAssociatedObject(self,
+                           s_hyb_image_shouldRefreshCache,
+                           @(hyb_shouldRefreshCache),
+                           OBJC_ASSOCIATION_RETAIN_NONATOMIC);
+}
 
 #pragma mark - Border
 - (CGFloat)hyb_borderWidth {
@@ -235,7 +253,7 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
       NSString *lastKey = [self hyb_lastBorderImageKey];
       NSString *key = [[HYBImageClipedManager shared] hyb_hashKeyWithColor:self.backgroundColor radius:cornerRadius border:self.hyb_borderWidth borderColor:self.hyb_borderColor];
       
-      if (lastKey == nil || ![lastKey isEqualToString:key]) {
+      if (self.hyb_shouldRefreshCache || lastKey == nil || ![lastKey isEqualToString:key]) {
         UIColor *bgColor = [self _private_color:backgroundColor];
         UIImage *image = [UIImage hyb_imageWithColor:self.backgroundColor toSize:targetSize cornerRadius:cornerRadius backgroundColor:bgColor borderColor:self.hyb_borderColor borderWidth:self.hyb_borderWidth];
         self.backgroundColor = [UIColor colorWithPatternImage:image];
@@ -243,16 +261,31 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
       }
     }
   } else {
+__block _HYBCornerBorderLayer *borderLayer = nil;
     [self.layer.sublayers enumerateObjectsUsingBlock:^(CALayer * _Nonnull obj, NSUInteger idx, BOOL * _Nonnull stop) {
       if ([obj isKindOfClass:[_HYBCornerBorderLayer class]]) {
-        return;
+        borderLayer = (_HYBCornerBorderLayer *)obj;
+        *stop = YES;
       }
     }];
+    
+    if (self.hyb_shouldRefreshCache && borderLayer != nil) {
+      [borderLayer removeFromSuperlayer];
+      
+      for (NSUInteger i = 0; i < self.subviews.count; ++i) {
+        UIView *subView = [self.subviews objectAtIndex:i];
+        if ([subView isKindOfClass:[_HYBCornerImageView class]]) {
+          [subView removeFromSuperview];
+        }
+      }
+    } else if (borderLayer && !self.hyb_shouldRefreshCache) {
+      return;
+    }
     
     UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:self.bounds
                                                byRoundingCorners:corner
                                                      cornerRadii:CGSizeMake(cornerRadius, cornerRadius)];
-    _HYBCornerBorderLayer *borderLayer = [_HYBCornerBorderLayer layer];
+    borderLayer = [_HYBCornerBorderLayer layer];
     borderLayer.path = path.CGPath;
     borderLayer.lineWidth = self.hyb_borderWidth;
     borderLayer.strokeColor = self.hyb_borderColor.CGColor;

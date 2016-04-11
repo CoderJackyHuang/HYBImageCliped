@@ -77,6 +77,13 @@ typedef void(^HYBClipedCallback)(UIImage *clipedImage);
  */
 @property (nonatomic, strong) UIColor *hyb_pathColor;
 
+/**
+ *	内部默认是会缓存corner所生成的圆角或者添加曲线之类的，如果view需要动态地调整，则
+ *  每次复用时，应该设置它为YES,则不会缓存。
+ *  默认为NO
+ */
+@property (nonatomic, assign) BOOL hyb_shouldRefreshCache;
+
 #pragma mark - 给任意UIView添加圆角（非图片，性能不如直接使用cornerRadius，但是下面的API支持任意圆角）
 /**
  *	给控件本身添加圆角，不是通过图片实现的。要求控件本身的frame是确定的，非自动布局才行。

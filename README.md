@@ -4,10 +4,19 @@
 #概述
 
 **开源项目名称**：HYBImageCliped  
-**当前版本：**2.2.1  
+**当前版本：**2.2.2  
 **项目用途：**可给任意继承UIView的控件添加任意多个圆角、可根据颜色生成图片且可带任意个圆角、给UIButton设置不同状态下的图片且可带任意圆角、给UIImageView设置任意图片，支持带圆角或者直接生成圆形。上述功能都不会造成离屏渲染。
 
 #版本变化
+
+###Version 2.2.2
+
+* 增加刷新缓存的功能，用于解决view的宽高需要动态变化这种需求
+
+```
+// UIView的扩展属性，默认为NO。设置为YES时，则会刷新缓存，重新添加
+@property (nonatomic, assign) BOOL hyb_shouldRefreshCache;
+```
 
 ###Version 2.2.1
 
