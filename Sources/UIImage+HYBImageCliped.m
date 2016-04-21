@@ -263,19 +263,18 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     targetRect = (CGRect){0, 0, width, width};
   }
   
-  UIGraphicsBeginImageContextWithOptions(targetRect.size,
-                                         backgroundColor != nil,
-                                         [UIScreen mainScreen].scale);
-  
-  if (backgroundColor) {
-    [backgroundColor setFill];
-    CGContextFillRect(UIGraphicsGetCurrentContext(), targetRect);
-  }
-  
   CGFloat pathWidth = self.hyb_pathWidth;
   CGFloat borderWidth = self.hyb_borderWidth;
   
   if (pathWidth > 0 && borderWidth > 0 && (isCircle || cornerRadius == 0)) {
+    UIGraphicsBeginImageContextWithOptions(targetRect.size,
+                                           backgroundColor != nil,
+                                           [UIScreen mainScreen].scale);
+    if (backgroundColor) {
+      [backgroundColor setFill];
+      CGContextFillRect(UIGraphicsGetCurrentContext(), targetRect);
+    }
+    
     UIColor *borderColor = self.hyb_borderColor;
     UIColor *pathColor = self.hyb_pathColor;
     
@@ -336,6 +335,14 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
       }
     }
   } else if (pathWidth > 0 && borderWidth > 0 && cornerRadius > 0 && !isCircle) {
+    UIGraphicsBeginImageContextWithOptions(targetRect.size,
+                                           backgroundColor != nil,
+                                           [UIScreen mainScreen].scale);
+    if (backgroundColor) {
+      [backgroundColor setFill];
+      CGContextFillRect(UIGraphicsGetCurrentContext(), targetRect);
+    }
+    
     UIColor *borderColor = self.hyb_borderColor;
     UIColor *pathColor = self.hyb_pathColor;
     
@@ -400,22 +407,38 @@ static const char *s_hyb_image_pathWidthKey = "s_hyb_image_pathWidthKey";
     rectImage.size.height -= borderWidth;
     
     UIImage *image = [self _hyb_scaleToSize:rectImage.size backgroundColor:backgroundColor];
+    UIGraphicsBeginImageContextWithOptions(targetRect.size,
+                                           NO,
+                                           [UIScreen mainScreen].scale);
     CGContextRef ctx = UIGraphicsGetCurrentContext();
+    
     CGContextSetFillColorWithColor(ctx, [UIColor colorWithPatternImage:image].CGColor);
-    CGContextSetStrokeColorWithColor(ctx, [borderColor CGColor]);
-    CGContextSetLineWidth(ctx, borderWidth);
     
     UIBezierPath *path1 = nil;
     if (!isCircle) {
       CGFloat minusPath1 = borderWidth / 2;
-      path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage byRoundingCorners:corners cornerRadii:CGSizeMake(cornerRadius - minusPath1, cornerRadius - minusPath1)];
+      path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage
+                                    byRoundingCorners:corners
+                                          cornerRadii:CGSizeMake(cornerRadius - minusPath1, cornerRadius - minusPath1)];
     } else {
-      path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage byRoundingCorners:corners cornerRadii:CGSizeMake(rectImage.size.width / 2, rectImage.size.width / 2)];
+      path1 = [UIBezierPath bezierPathWithRoundedRect:rectImage
+                                    byRoundingCorners:corners
+                                          cornerRadii:CGSizeMake(rectImage.size.width / 2, rectImage.size.width / 2)];
     }
     
+    CGContextSetStrokeColorWithColor(ctx, [borderColor CGColor]);
+    CGContextSetLineWidth(ctx, borderWidth);
     CGContextAddPath(ctx, path1.CGPath);
     CGContextDrawPath(ctx, kCGPathFillStroke);
   } else {
+    UIGraphicsBeginImageContextWithOptions(targetRect.size,
+                                           backgroundColor != nil,
+                                           [UIScreen mainScreen].scale);
+    if (backgroundColor) {
+      [backgroundColor setFill];
+      CGContextFillRect(UIGraphicsGetCurrentContext(), targetRect);
+    }
+ 
     if (isCircle) {
       CGContextAddPath(UIGraphicsGetCurrentContext(),
                        [UIBezierPath bezierPathWithRoundedRect:targetRect

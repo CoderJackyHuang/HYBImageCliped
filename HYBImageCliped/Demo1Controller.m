@@ -70,6 +70,7 @@
   [view3 hyb_addCorner:UIRectCornerBottomLeft | UIRectCornerBottomRight cornerRadius:10];
 
 
+#pragma mark - 第三排
   UIImageView *imgView = [[UIImageView alloc] init];
   imgView.frame = CGRectMake(10, 200, 80, 80);
   [self.view addSubview:imgView];

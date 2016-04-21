@@ -10,6 +10,7 @@
 #import "Demo1Controller.h"
 #import "HYBGridViewController.h"
 #import "HYBVC1.h"
+#import "HYBAutolayoutSupportVC.h"
 
 #define kCellIdentifier @"GITHUB Name CoderJackyHuang"
 
@@ -42,6 +43,7 @@
   self.datasource = @[[[Demo1Controller alloc] initWithTitle:@"生成圆角"],
                       [[HYBGridViewController alloc] initWithTitle:@"网络图片"],
                       [[HYBVC1 alloc] initWithTitle:@"对比优化前后效果"],
+                      [[HYBAutolayoutSupportVC alloc] initWithTitle:@"支持自动布局"],
                       ];
   [self.collectionView reloadData];
   self.collectionView.backgroundColor = [UIColor whiteColor];
