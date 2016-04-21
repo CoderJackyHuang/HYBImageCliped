@@ -160,7 +160,7 @@
 
 #pragma mark - 最完整的API
 /**
- *	剪裁图片为任意指定圆角。isCircle的优化级最高，其次是cornerRadius，最后还是corners。
+ *	剪裁图片为任意指定圆角。isCircle的优化级最高，其次是cornerRadius，最后才是corners。
  *
  *	@param targetSize			  裁剪成指定的大小
  *	@param cornerRadius		  圆角大小
