@@ -273,6 +273,10 @@ static const char *s_hyb_image_shouldRefreshCache = "s_hyb_image_shouldRefreshCa
   NSDictionary *dict = @{@"corner" : @(corner),
                          @"cornerRadius" : @(cornerRadius),
                          @"backgroundColor": backgroundColor ?: [UIColor clearColor]};
+  // 解决中文label添加圆角及边框出现奇怪现象的问题
+  if ([self isKindOfClass:[UILabel class]]) {
+    self.layer.masksToBounds = YES;
+  }
   
   // 增加autolayout支持
   if (targetSize.width <= 0 || targetSize.height <= 0) {

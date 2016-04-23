@@ -45,7 +45,7 @@
   [self.contentView addSubview:button];
   
   UILabel *label = [[UILabel alloc] init];
-  label.text = @"corner label";
+  label.text = @"圆角标签";
   label.font = [UIFont systemFontOfSize:14];
   label.textAlignment = NSTextAlignmentCenter;
   [self.contentView addSubview:label];
@@ -53,6 +53,7 @@
   label.hyb_borderColor = [UIColor redColor];
   label.backgroundColor = [UIColor whiteColor];
   label.hyb_borderWidth = 1;
+  
   [label hyb_addCorner:UIRectCornerAllCorners cornerRadius:10 size:label.bounds.size backgroundColor:[UIColor lightGrayColor]];
   
   UIButton *btn = [[UIButton alloc] init];
