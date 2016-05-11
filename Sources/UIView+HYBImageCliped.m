@@ -38,12 +38,12 @@
 
 @end
 
-@interface HYBImageClipedManager (CorenrImages)
+@interface HYBImageClipedManager (CornerImages)
 
 
 @end
 
-@implementation HYBImageClipedManager (CorenrImages)
+@implementation HYBImageClipedManager (CornerImages)
 
 - (NSCache *)hyb_sharedCornerImages {
   return [HYBImageClipedManager shared].sharedCache;
